@@ -30,8 +30,16 @@ spring:
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
 
+
 live-streaming-platform:
   jwt:
     secret: f4e2e52034348f86b67cde581c0f9eb5
     expire: 604800
     header: Authorization
+
+logging:
+  file:
+    name: app.log
+  pattern:
+    console: '%clr(%d{yyyy-MM-dd} [%thread] %-5level %logger{50} - %msg%n)'
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} >>> [%thread] >>> %-5level >>> %logger{50} >>> %msg%n'
