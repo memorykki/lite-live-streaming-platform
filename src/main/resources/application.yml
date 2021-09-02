@@ -44,3 +44,22 @@ logging:
   pattern:
     console: '%clr(%d{yyyy-MM-dd} [%thread] %-5level %logger{50} - %msg%n)'
     file: '%d{yyyy-MM-dd HH:mm:ss.SSS} >>> [%thread] >>> %-5level >>> %logger{50} >>> %msg%n'
+
+tencent:
+  cloud:
+    sms:
+      SecretId: AKID2tTnqdKlwqUrxmLdePu73i7E5fz2oJXU
+      SecretKey: h7G8j36tPecJkunPlrgEWXHjup79uPda
+      Endpoint: sms.tencentcloudapi.com
+      Region: ap-beijing
+      SmsSdkAppId: 1400568669
+      SignName: 张恒生活记录
+      TemplateId: 1104537
+  qq:
+    email:
+      hostname: smtp.qq.com
+      from: memorykk@qq.com
+      name: lite直播平台
+      username: memorykk@qq.com
+      password: uxyvvpohrmwhbheg
+      subject: 注册邮件
