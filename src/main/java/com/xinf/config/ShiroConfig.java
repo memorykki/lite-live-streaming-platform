@@ -1,5 +1,6 @@
 package com.xinf.config;
 
+import com.xinf.constant.SecurityProperties;
 import com.xinf.service.BanPermissionService;
 import com.xinf.service.RoleService;
 import com.xinf.service.UserService;
@@ -22,7 +23,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,7 +39,10 @@ public class ShiroConfig {
     private String host = "localhost";
     private int port = 6379;
     private String password;
-    private Duration timeout;
+    private int timeout;
+
+    @Autowired
+    SecurityProperties securityProperties;
 
     @Autowired
     UserService userService;
@@ -66,7 +69,8 @@ public class ShiroConfig {
          * anon:所有url都可以匿名访问，authc:所有url都必须认证通过才可以访问;
          * 过滤链定义，从上向下顺序执行，authc 应放在 anon 下面
          * */
-        filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/user/login", "anon");
+        filterChainDefinitionMap.put("/user/register", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/fonts/**", "anon");
         filterChainDefinitionMap.put("/img/**", "anon");
@@ -96,7 +100,7 @@ public class ShiroConfig {
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
         // 散列算法:这里使用MD5算法;
-        hashedCredentialsMatcher.setHashAlgorithmName("md5");
+        hashedCredentialsMatcher.setHashAlgorithmName("MD5");
         // 散列的次数，比如散列两次，相当于 md5(md5(""));
         hashedCredentialsMatcher.setHashIterations(2);
         return hashedCredentialsMatcher;
@@ -107,7 +111,7 @@ public class ShiroConfig {
      */
     @Bean
     public MyShiroRealm myShiroRealm() {
-        MyShiroRealm myShiroRealm = new MyShiroRealm(userService, roleService, banPermissionService);
+        MyShiroRealm myShiroRealm = new MyShiroRealm(securityProperties, userService, roleService, banPermissionService);
         myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return myShiroRealm;
     }
@@ -149,7 +153,7 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(host);
         redisManager.setPort(port);
-        redisManager.setTimeout((int) timeout.toMillis());
+        redisManager.setTimeout(timeout);
         redisManager.setPassword(password);
         return redisManager;
     }

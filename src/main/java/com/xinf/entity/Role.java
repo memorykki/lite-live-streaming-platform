@@ -1,5 +1,6 @@
 package com.xinf.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class Role implements Serializable {
     /**
      * 身份id：0-10 观众 11-20 主播 999 管理员
      */
+    @TableId(value = "role_id")
     private Integer roleId;
     /**
      * 身份名称

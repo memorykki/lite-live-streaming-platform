@@ -1,5 +1,7 @@
 package com.xinf.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.Date;
 public class User implements Serializable {
     private static final long serialVersionUID = 992236825819524628L;
 
+    @TableId(value = "user_id",type = IdType.AUTO)
     private Long userId;
     /**
      * 昵称

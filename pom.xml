@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>cn.memorykk.ts</groupId>
+    <groupId>com.xinf</groupId>
     <artifactId>lite-live-streaming-platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>lite-live-streaming-platform</name>

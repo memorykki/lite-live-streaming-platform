@@ -1,5 +1,6 @@
 package com.xinf.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.io.Serializable;
 public class BanPermission implements Serializable {
     private static final long serialVersionUID = 312969470787569458L;
 
+    @TableId(value = "user_id")
     private Long userId;
     /**
      * 举报表主键，对应举报原因等

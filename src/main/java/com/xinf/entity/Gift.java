@@ -1,5 +1,7 @@
 package com.xinf.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ import java.io.Serializable;
 public class Gift implements Serializable {
     private static final long serialVersionUID = 160016009972492047L;
 
+    @TableId(value = "gift_id",type = IdType.AUTO)
     private Integer giftId;
 
     private String giftName;

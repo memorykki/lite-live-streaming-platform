@@ -1,5 +1,7 @@
 package com.xinf.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ public class Vod implements Serializable {
     /**
      * 影片id， 通过拼接获取影片link
      */
+    @TableId(value = "vod_id",type = IdType.AUTO)
     private Long vodId;
 
     private String vodName;
