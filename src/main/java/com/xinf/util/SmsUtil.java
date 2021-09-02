@@ -27,7 +27,7 @@ public class SmsUtil {
      *
      * @return 发送成功返回六位正整数，失败返回-1
      */
-    public Object send(String phone) {
+    public int send(String phone) {
         code = (int)((Math.random()*9+1)*100000);
         SendSmsResponse resp = null;
         try{

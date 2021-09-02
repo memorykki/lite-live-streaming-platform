@@ -6,6 +6,8 @@ import com.xinf.dao.UserDao;
 import com.xinf.dto.UserInfo;
 import com.xinf.entity.User;
 import com.xinf.service.UserService;
+import com.xinf.util.EmailUtil;
+import com.xinf.util.SmsUtil;
 import com.xinf.util.error.LoginException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -31,6 +33,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Autowired
     private SecurityProperties securityProperties;
+    @Autowired
+    private EmailUtil emailUtil;
+    @Autowired
+    private SmsUtil smsUtil;
 
     @Override
     public boolean registerUser(User user) {
@@ -87,5 +93,15 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         log.info("用户登出成功，用户名: {}", ((UserInfo)subject.getPreviousPrincipals().getPrimaryPrincipal()).getUser().getUserName());
+    }
+
+    @Override
+    public int sendEmail(String emailAddress) {
+        return emailUtil.send(emailAddress);
+    }
+
+    @Override
+    public int sendSms(String phone) {
+        return smsUtil.send(phone);
     }
 }
