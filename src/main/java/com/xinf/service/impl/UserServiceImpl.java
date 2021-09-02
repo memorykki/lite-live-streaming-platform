@@ -1,12 +1,14 @@
 package com.xinf.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.base.Strings;
 import com.xinf.constant.SecurityProperties;
 import com.xinf.dao.UserDao;
 import com.xinf.dto.UserInfo;
 import com.xinf.entity.User;
 import com.xinf.service.UserService;
 import com.xinf.util.EmailUtil;
+import com.xinf.util.RedisUtil;
 import com.xinf.util.SmsUtil;
 import com.xinf.util.error.LoginException;
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +35,32 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Autowired
     private SecurityProperties securityProperties;
+
     @Autowired
     private EmailUtil emailUtil;
+
     @Autowired
     private SmsUtil smsUtil;
 
-    @Override
-    public boolean registerUser(User user) {
+    @Autowired
+    private RedisUtil redisUtil;
 
+    @Override
+    public boolean registerUser(User user, int code) {
+
+        // 检测code
+        String key;
+        if (!Strings.isNullOrEmpty(user.getUserEmail())) {
+            key = user.getUserEmail();
+        } else if (!Strings.isNullOrEmpty(user.getUserPhone())) {
+            key = user.getUserPhone();
+        } else {
+            return false;
+        }
+        if (Integer.valueOf(redisUtil.get(key)) != code) {
+            return false;
+        }
+        redisUtil.delete(key);
         /*
          * MD5加密：
          * 使用SimpleHash类对原始密码进行加密。
@@ -51,7 +71,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
          * 最后用toHex()方法将加密后的密码转成String
          * */
         String newPs = new SimpleHash("MD5", user.getUserPasswd(), securityProperties.salt, 2).toHex();
-        log.debug("register salt: {}", securityProperties.salt);
         user.setUserPasswd(newPs);
         return save(user);
     }
