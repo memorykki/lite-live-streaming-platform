@@ -17,4 +17,8 @@ public interface UserService extends IService<User> {
     public UserInfo login(String auth, String password);
 
     public void logout();
+
+    public int sendEmail(String emailAddress);
+
+    public int sendSms(String phone);
 }

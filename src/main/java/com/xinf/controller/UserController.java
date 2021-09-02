@@ -91,7 +91,8 @@ public class UserController extends ApiController {
     }
 
     @PostMapping("/register")
-    public R register(@RequestBody User user) {
+    public R register(@RequestBody User user,
+                      @RequestParam int _code) {
         if (userService.registerUser(user)) {
             return success(null);
         } else {
@@ -146,5 +147,22 @@ public class UserController extends ApiController {
     @RequestMapping("/unauthorized")
     public ResponseEntity<?> unauthorized() {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @RequestMapping("/login/sendVerifiableCode")
+    public R<Object> sendSms(int type,String dist){
+        //type：1邮箱 2电话
+        int res;
+        if(type==1){
+            res = userService.sendEmail(dist);
+        }else{
+            res = userService.sendSms(dist);
+        }
+        if(res == -1){
+            return failed("发送失败！");
+        }else{
+//            res;
+            return success("发送成功！");
+        }
     }
 }
