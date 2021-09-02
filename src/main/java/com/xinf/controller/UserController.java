@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.dto.UserInfo;
 import com.xinf.entity.User;
 import com.xinf.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("user")
+@Slf4j
 public class UserController extends ApiController {
     /**
      * 服务对象
@@ -88,6 +90,15 @@ public class UserController extends ApiController {
         return success(this.userService.removeByIds(idList));
     }
 
+    @PostMapping("/register")
+    public R register(@RequestBody User user) {
+        if (userService.registerUser(user)) {
+            return success(null);
+        } else {
+            return failed("注册失败");
+        }
+    }
+
     /**
      * 用户登录
      */
@@ -102,11 +113,15 @@ public class UserController extends ApiController {
             return failed("密码为空！");
         }
 
+        log.debug("auth : {}, passwd : {}", auth, passwd);
+
         UserInfo loginUser = userService.login(auth, passwd);
 
         // 登录成功返回用户信息
         return success(loginUser);
     }
+
+
 
     /**
      * description: 登出

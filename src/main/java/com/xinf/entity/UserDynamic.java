@@ -1,5 +1,7 @@
 package com.xinf.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.Date;
 public class UserDynamic implements Serializable {
     private static final long serialVersionUID = -54017594261077080L;
 
+    @TableId(value = "dynamic_id",type = IdType.AUTO)
     private Long dynamicId;
 
     private Long userId;

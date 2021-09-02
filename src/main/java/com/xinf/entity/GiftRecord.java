@@ -1,5 +1,7 @@
 package com.xinf.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.Date;
 public class GiftRecord implements Serializable {
     private static final long serialVersionUID = 516969341620802693L;
 
+    @TableId(value = "serial_gift_id",type = IdType.AUTO)
     private Long serialGiftId;
 
     private Integer userId;

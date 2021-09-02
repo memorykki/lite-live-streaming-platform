@@ -1,5 +1,7 @@
 package com.xinf.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,8 @@ public class CoinHistory implements Serializable {
     /**
      * 币流水id
      */
+
+    @TableId(value = "serial_coin_id",type = IdType.AUTO)
     private Long serialCoinId;
 
     private Long userId;

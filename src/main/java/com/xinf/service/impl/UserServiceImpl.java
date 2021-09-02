@@ -1,6 +1,7 @@
 package com.xinf.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xinf.constant.SecurityProperties;
 import com.xinf.dao.UserDao;
 import com.xinf.dto.UserInfo;
 import com.xinf.entity.User;
@@ -12,7 +13,9 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -25,6 +28,27 @@ import org.springframework.stereotype.Service;
 @Service("userService")
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
+
+    @Autowired
+    private SecurityProperties securityProperties;
+
+    @Override
+    public boolean registerUser(User user) {
+
+        /*
+         * MD5加密：
+         * 使用SimpleHash类对原始密码进行加密。
+         * 第一个参数代表使用MD5方式加密
+         * 第二个参数为原始密码
+         * 第三个参数为盐值，即用户名
+         * 第四个参数为加密次数
+         * 最后用toHex()方法将加密后的密码转成String
+         * */
+        String newPs = new SimpleHash("MD5", user.getUserPasswd(), securityProperties.salt, 2).toHex();
+        log.debug("register salt: {}", securityProperties.salt);
+        user.setUserPasswd(newPs);
+        return save(user);
+    }
 
     @Override
     public UserInfo login(String auth, String password) {

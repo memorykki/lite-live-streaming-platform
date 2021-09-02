@@ -2,6 +2,7 @@ package com.xinf.util.shiro;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xinf.constant.Permission;
+import com.xinf.constant.SecurityProperties;
 import com.xinf.dto.UserInfo;
 import com.xinf.entity.BanPermission;
 import com.xinf.entity.Role;
@@ -15,12 +16,11 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 
 import java.util.Objects;
 
@@ -31,34 +31,16 @@ import java.util.Objects;
 @Slf4j
 public class MyShiroRealm extends AuthorizingRealm {
 
+    SecurityProperties securityProperties;
+
     UserService userService;
 
     RoleService roleService;
 
     BanPermissionService banPermissionService;
 
-    public MyShiroRealm(UserService userService, RoleService roleService, BanPermissionService banPermissionService) {
-        this.userService = userService;
-        this.roleService = roleService;
-        this.banPermissionService = banPermissionService;
-    }
-
-    public MyShiroRealm(CacheManager cacheManager, UserService userService, RoleService roleService, BanPermissionService banPermissionService) {
-        super(cacheManager);
-        this.userService = userService;
-        this.roleService = roleService;
-        this.banPermissionService = banPermissionService;
-    }
-
-    public MyShiroRealm(CredentialsMatcher matcher, UserService userService, RoleService roleService, BanPermissionService banPermissionService) {
-        super(matcher);
-        this.userService = userService;
-        this.roleService = roleService;
-        this.banPermissionService = banPermissionService;
-    }
-
-    public MyShiroRealm(CacheManager cacheManager, CredentialsMatcher matcher, UserService userService, RoleService roleService, BanPermissionService banPermissionService) {
-        super(cacheManager, matcher);
+    public MyShiroRealm(SecurityProperties securityProperties, UserService userService, RoleService roleService, BanPermissionService banPermissionService) {
+        this.securityProperties = securityProperties;
         this.userService = userService;
         this.roleService = roleService;
         this.banPermissionService = banPermissionService;
@@ -122,7 +104,8 @@ public class MyShiroRealm extends AuthorizingRealm {
                 role.setLivingPermission(0);
             }
         }
-
-        return new SimpleAuthenticationInfo(new UserInfo(user, role), user.getUserPasswd(), getName());
+        log.debug("user login info, user : {}, role : {}, salt: {}", user, role, securityProperties.salt);
+        ByteSource salt = ByteSource.Util.bytes(securityProperties.salt);
+        return new SimpleAuthenticationInfo(new UserInfo(user, role), user.getUserPasswd(), salt, getName());
     }
 }
