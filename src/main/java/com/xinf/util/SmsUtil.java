@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 public class SmsUtil {
     @Autowired
     TencentCloudSmsConfig tencentCloudSmsConfig;
-    private int code;
     /**
      *
      * @param phone  电话，不带区号
@@ -28,7 +27,7 @@ public class SmsUtil {
      * @return 发送成功返回六位正整数，失败返回-1
      */
     public int send(String phone) {
-        code = (int)((Math.random()*9+1)*100000);
+        int code = (int) ((Math.random()*9+1)*100000);
         SendSmsResponse resp = null;
         try{
             // 实例化一个认证对象，入参需要传入腾讯云账户secretId，secretKey,此处还需注意密钥对的保密

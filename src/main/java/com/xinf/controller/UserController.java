@@ -9,6 +9,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.dto.UserInfo;
 import com.xinf.entity.User;
 import com.xinf.service.UserService;
+import com.xinf.util.EmailUtil;
+import com.xinf.util.RedisUtil;
+import com.xinf.util.SmsUtil;
+import com.xinf.util.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * (User)表控制层
@@ -33,6 +38,15 @@ public class UserController extends ApiController {
      */
     @Resource
     private UserService userService;
+
+    @Resource
+    private SmsUtil smsUtil;
+
+    @Resource
+    private EmailUtil emailUtil;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     /**
      * 分页查询所有数据
@@ -91,12 +105,11 @@ public class UserController extends ApiController {
     }
 
     @PostMapping("/register")
-    public R register(@RequestBody User user,
-                      @RequestParam int _code) {
-        if (userService.registerUser(user)) {
+    public R register(@RequestBody User user, @RequestParam int code) {
+        if (userService.registerUser(user, code)) {
             return success(null);
         } else {
-            return failed("注册失败");
+            return failed("验证码错误");
         }
     }
 
@@ -150,19 +163,25 @@ public class UserController extends ApiController {
     }
 
     @RequestMapping("/login/sendVerifiableCode")
-    public R<Object> sendSms(int type,String dist){
-        //type：1邮箱 2电话
-        int res;
-        if(type==1){
-            res = userService.sendEmail(dist);
-        }else{
-            res = userService.sendSms(dist);
+    public R<Object> sendVerifiableCode(String distAddress){
+        int code = 0;
+        if (Strings.isConstitutedByDigit(distAddress)) {
+            if (userService.count(new QueryWrapper<User>().eq("user_phone", distAddress)) > 0) {
+                return failed("电话已注册");
+            }
+            code = smsUtil.send(distAddress);
+        } else if (Strings.isEmail(distAddress)) {
+            if (userService.count(new QueryWrapper<User>().eq("user_email", distAddress)) > 0) {
+                return failed("邮箱已注册");
+            }
+            code = smsUtil.send(distAddress);
         }
-        if(res == -1){
-            return failed("发送失败！");
-        }else{
-//            res;
-            return success("发送成功！");
+
+        if (code > 0) {
+            redisUtil.append(distAddress, String.valueOf(code));
+            redisUtil.expire(distAddress, 60000, TimeUnit.MILLISECONDS);
+            return success(null);
         }
+        return failed("注册信息错误");
     }
 }

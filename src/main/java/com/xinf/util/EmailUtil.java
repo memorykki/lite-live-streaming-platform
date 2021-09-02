@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class EmailUtil {
+
     @Autowired
     QQEmailConfig qqEmailConfig;
-    private int code;
     /**
      *
      * @param recvAddress：邮箱地址
@@ -22,7 +22,7 @@ public class EmailUtil {
      * @return 发送成功返回六位正整数，失败返回-1
      */
     public int send(String recvAddress){
-        code = (int)((Math.random()*9+1)*100000);
+        int code = (int)((Math.random()*9+1)*100000);
         try {
             HtmlEmail email = new HtmlEmail();
             email.setHostName(qqEmailConfig.getHostname());

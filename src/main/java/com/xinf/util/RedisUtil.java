@@ -5,7 +5,9 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -19,9 +21,11 @@ import java.util.concurrent.TimeUnit;
  * @date: 2021年09月02日 16:37
  */
 
+@Component
 public class RedisUtil {
     private StringRedisTemplate redisTemplate;
 
+    @Resource
     public void setRedisTemplate(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }

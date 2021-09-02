@@ -12,7 +12,7 @@ import com.xinf.entity.User;
  */
 public interface UserService extends IService<User> {
 
-    public boolean registerUser(User user);
+    public boolean registerUser(User user, int code);
 
     public UserInfo login(String auth, String password);
 
