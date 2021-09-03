@@ -24,7 +24,7 @@ public class Playback implements Serializable {
     @TableId(value = "playback_id",type = IdType.AUTO)
     private Long playbackId;
 
-    private Long userId;
+    private Long roomId;
 
-    private Date playbackTime;
+    private String playbackPath;
 }
