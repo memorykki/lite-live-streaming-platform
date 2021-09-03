@@ -164,6 +164,7 @@ public class UserController extends ApiController {
 
     @RequestMapping("/login/sendVerifiableCode")
     public R<Object> sendVerifiableCode(String distAddress){
+        log.info("注册用户地址：{}", distAddress);
         int code = 0;
         if (Strings.isConstitutedByDigit(distAddress)) {
             if (userService.count(new QueryWrapper<User>().eq("user_phone", distAddress)) > 0) {
