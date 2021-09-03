@@ -174,7 +174,7 @@ public class UserController extends ApiController {
             if (userService.count(new QueryWrapper<User>().eq("user_email", distAddress)) > 0) {
                 return failed("邮箱已注册");
             }
-            code = smsUtil.send(distAddress);
+            code = emailUtil.send(distAddress);
         }
 
         if (code > 0) {
