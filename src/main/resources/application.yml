@@ -42,7 +42,7 @@ logging:
   file:
     name: app.log
   pattern:
-    console: '%clr(%d{yyyy-MM-dd} [%thread] %-5level %logger{50} - %msg%n)'
+    console: '%clr(%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n)'
     file: '%d{yyyy-MM-dd HH:mm:ss.SSS} >>> [%thread] >>> %-5level >>> %logger{50} >>> %msg%n'
 
 tencent:
