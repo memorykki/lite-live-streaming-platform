@@ -11,14 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class LiteLiveStreamingPlatformApplicationTests {
-    @Autowired
-    SmsUtil smsUtil;
-    @Autowired
-    EmailUtil emailUtil;
     @Test
     void contextLoads() {
-//        smsUtil.send("18791763056");
-        int send = emailUtil.send("2426412613@qq.com");
-        System.out.println(send);
     }
 }
