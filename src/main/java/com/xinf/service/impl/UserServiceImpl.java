@@ -47,6 +47,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public boolean registerUser(User user, int code) {
+        if (code == -1) {
+            return false;
+        }
 
         // 检测code
         String key;
@@ -57,7 +60,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         } else {
             return false;
         }
-        if (Integer.valueOf(redisUtil.get(key)) != code) {
+
+        log.info("register key : {}", key);
+        String v = redisUtil.get(key);
+        if (Strings.isNullOrEmpty(v) || Integer.valueOf(v) != code) {
             return false;
         }
         redisUtil.delete(key);

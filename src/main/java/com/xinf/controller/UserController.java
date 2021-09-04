@@ -105,11 +105,11 @@ public class UserController extends ApiController {
     }
 
     @PostMapping("/register")
-    public R register(@RequestBody User user, @RequestParam int code) {
+    public R register(@RequestBody User user, @RequestParam(defaultValue = "-1") int code) {
         if (userService.registerUser(user, code)) {
             return success(null);
         } else {
-            return failed("验证码错误");
+            return failed("注册错误");
         }
     }
 
@@ -162,7 +162,7 @@ public class UserController extends ApiController {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @RequestMapping("/login/sendVerifiableCode")
+    @RequestMapping("/sendVerifiableCode")
     public R<Object> sendVerifiableCode(String distAddress){
         log.info("注册用户地址：{}", distAddress);
         int code = 0;
@@ -180,7 +180,7 @@ public class UserController extends ApiController {
 
         if (code > 0) {
             redisUtil.append(distAddress, String.valueOf(code));
-            redisUtil.expire(distAddress, 60000, TimeUnit.MILLISECONDS);
+            redisUtil.expire(distAddress, 600000, TimeUnit.MILLISECONDS);
             return success(null);
         }
         return failed("注册信息错误");

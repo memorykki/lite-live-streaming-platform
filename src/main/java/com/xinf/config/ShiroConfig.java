@@ -71,6 +71,7 @@ public class ShiroConfig {
          * */
         filterChainDefinitionMap.put("/user/login", "anon");
         filterChainDefinitionMap.put("/user/register", "anon");
+        filterChainDefinitionMap.put("/user/sendVerifiableCode", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/fonts/**", "anon");
         filterChainDefinitionMap.put("/img/**", "anon");
