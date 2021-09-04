@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("user")
+@CrossOrigin
 @Slf4j
 public class UserController extends ApiController {
     /**
