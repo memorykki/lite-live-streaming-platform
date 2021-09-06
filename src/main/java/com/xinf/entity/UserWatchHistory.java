@@ -24,4 +24,9 @@ public class UserWatchHistory implements Serializable {
     private Long roomId;
 
     private Date watchTime;
+
+    public UserWatchHistory(long _userId, long _roomId) {
+        userId = _userId;
+        roomId = _roomId;
+    }
 }

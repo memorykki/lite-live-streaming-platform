@@ -40,7 +40,7 @@ public class CommandManagerImpl implements CommandManager {
 	/**
 	 * 保活处理器
 	 */
-//	private KeepAliveHandler keepAliveHandler=null;
+	private KeepAliveHandler keepAliveHandler=null;
 
 	/**
 	 * 全部默认初始化，自动查找配置文件
@@ -98,8 +98,8 @@ public class CommandManagerImpl implements CommandManager {
 			this.taskDao = new TaskDaoImpl(size);
 			//初始化保活线程
 			if(iskeepalive) {
-//				keepAliveHandler = new KeepAliveHandler(taskDao);
-//				keepAliveHandler.start();
+				keepAliveHandler = new KeepAliveHandler(taskDao);
+				keepAliveHandler.start();
 			}
 		}
 		
@@ -266,9 +266,9 @@ public class CommandManagerImpl implements CommandManager {
 
 	@Override
 	public void destory() {
-//		if(keepAliveHandler!=null) {
-//			//安全停止保活线程
-//			keepAliveHandler.interrupt();
-//		}
+		if(keepAliveHandler!=null) {
+			//安全停止保活线程
+			keepAliveHandler.interrupt();
+		}
 	}
 }
