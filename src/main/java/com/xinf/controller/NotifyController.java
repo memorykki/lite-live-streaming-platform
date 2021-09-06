@@ -45,6 +45,7 @@ public class NotifyController {
         if(room != null) {
             room.setRoomStatus(1);
             roomService.updateById(room);
+            log.info(name+"开始推流");
             return true;
         }else{
             return false;
@@ -57,6 +58,7 @@ public class NotifyController {
         if(room != null) {
             room.setRoomStatus(0);
             roomService.updateById(room);
+            log.info(name+"关闭推流");
             return true;
         }else{
             return false;
@@ -64,22 +66,20 @@ public class NotifyController {
     }
 
     @RequestMapping("/play")
-    public boolean play(@RequestParam String name,
-                        @RequestParam String addr){
-        if(!redisUtil.sIsMember(name,addr)){
-            redisUtil.sAdd(name, addr);
-            if (!redisUtil.setIfAbsent(name, "1")) {
-                redisUtil.incrBy(name, 1);
-            }
+    public boolean play(@RequestParam String name){
+        if(redisUtil.zScore("recommand",name)==null){
+            redisUtil.zAdd("recommand",name,0);
+        }else{
+            redisUtil.zIncrementScore("recommand",name,1);
         }
         return true;
     }
 
     @RequestMapping("/play_done")
-    public boolean play_done(@RequestParam String name,
-                             @RequestParam String addr){
-        redisUtil.sRemove(name,addr);
-        redisUtil.incrBy(name,-1);
+    public boolean play_done(@RequestParam String name){
+        if(redisUtil.zScore("recommand",name)!=null){
+            redisUtil.zIncrementScore("recommand",name,-1);
+        }
         return true;
     }
 

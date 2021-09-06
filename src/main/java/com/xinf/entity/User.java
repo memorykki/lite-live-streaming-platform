@@ -52,9 +52,13 @@ public class User implements Serializable {
      */
     private Integer userFansCount;
     /**
-     * 活力币数量
+     * 活力币剩余数量
      */
-    private Integer userCoins;
+    private Integer userExistCoins;
+    /**
+     * 活力币总数
+     */
+    private Integer userSumCoins;
     /**
      * 开设房间
      */

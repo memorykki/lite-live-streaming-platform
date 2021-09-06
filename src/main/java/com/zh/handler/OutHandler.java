@@ -98,7 +98,7 @@ public class OutHandler extends Thread {
 					System.err.println("检测到中断，提交重启任务给保活处理器");
 					//如果发生异常中断，立即进行保活
 					//把中断的任务交给保活处理器进行进一步处理
-//					KeepAliveHandler.add(id);
+					KeepAliveHandler.add(id);
 				}
 			}
 		} catch (IOException e) {
