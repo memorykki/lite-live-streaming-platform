@@ -33,10 +33,10 @@ mybatis-plus:
 
 live-streaming-platform:
   jwt:
-    secret: f4e2e52034348f86b67cde581c0f9eb5
-    expire: 604800
-    salt: cdsjklew12390d012jk1jd520dw
-
+    expire: 604800  # 过期时间
+    salt: cdsjklew12390d012jk1jd520dw # 加密盐
+  filepath:
+    dynamicFilePath:
 
 logging:
   file:

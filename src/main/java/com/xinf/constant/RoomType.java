@@ -1,14 +1,14 @@
 package com.xinf.constant;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 /**
  * @author xinf
  * @since 2021/9/6 17:43
  */
 public class RoomType {
-    public static Map<String, Integer> res = new HashMap<>();
+    public static BiMap<String, Integer> res = HashBiMap.create(5);
     static {
         res.put("游戏", 1);
         res.put("唱歌", 2);
@@ -16,5 +16,4 @@ public class RoomType {
         res.put("放映", 4);
         res.put("整活", 5);
     }
-
 }

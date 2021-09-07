@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * @author xinf
@@ -23,6 +24,13 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public ResponseEntity<String> parameterErrorHandler(HttpServletRequest req, LoginException e) {
         return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = IOException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public void ioErrorHandler(HttpServletRequest req, IOException e) {
+        log.error("io error : {}", e);
     }
 
     @ExceptionHandler(value = Exception.class)

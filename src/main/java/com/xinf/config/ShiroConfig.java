@@ -39,7 +39,6 @@ public class ShiroConfig {
     private String host = "localhost";
     private int port = 6379;
     private String password;
-    private int timeout;
 
     @Autowired
     SecurityProperties securityProperties;
@@ -150,7 +149,7 @@ public class ShiroConfig {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(host);
         redisManager.setPort(port);
-        redisManager.setTimeout(timeout);
+        redisManager.setTimeout(securityProperties.expire);
         redisManager.setPassword(password);
         return redisManager;
     }

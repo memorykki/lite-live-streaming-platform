@@ -58,6 +58,7 @@ public class UserController extends ApiController {
      */
     @GetMapping
     public R selectAll(Page<User> page, User user) {
+        log.info("info page: {}, user ：{}", page, user);
         return success(this.userService.page(page, new QueryWrapper<>(user)));
     }
 
@@ -117,7 +118,7 @@ public class UserController extends ApiController {
     /**
      * 用户登录
      */
-    @PostMapping("/login")
+    @GetMapping("/login")
     public R login(String auth, String passwd) {
 
         if (StringUtils.isBlank(auth)) {

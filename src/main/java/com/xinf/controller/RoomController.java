@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.constant.RoomType;
+import com.xinf.dto.RoomInfo;
 import com.xinf.entity.Room;
 import com.xinf.entity.UserWatchHistory;
 import com.xinf.service.RoomService;
+import com.xinf.service.UserService;
 import com.xinf.service.UserWatchHistoryService;
 import com.xinf.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,29 +31,71 @@ import java.util.Set;
 public class RoomController extends ApiController {
 
     @Resource
+    private UserService userService;
+    @Resource
     private RoomService roomService;
     @Resource
     private UserWatchHistoryService userWatchHistoryService;
     @Autowired
     RedisUtil redisUtil;
 
+    /**
+     *  获取直播排行
+     * @return
+     */
     @GetMapping("selectRankingList")
     public R selectRankingList(){
 
         Set<String> roomSet = redisUtil.zReverseRangeByScore("recommand", 0, 5);
         QueryWrapper<Room> recommandQueryWrapper = new QueryWrapper();
-        recommandQueryWrapper.in("room_id",roomSet);
+        recommandQueryWrapper.select("room_id", "user_id", "room_title", "room_photo", "room_status", "room_type");
+        recommandQueryWrapper.in("room_id", roomSet);
         List<Room> roomList = roomService.list(recommandQueryWrapper);
-
         return success(roomList);
     }
 
+    /**
+     *  获取类别下直播房间信息, 默认分页大小为10，第一页
+     * @param classify
+     * @param pageSize
+     * @param pageCurrent
+     * @return
+     */
     @GetMapping("selectClassifyList")
-    public R selectClassifyList(String classify) {
+    public R selectClassifyList(String classify,
+             @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         QueryWrapper<Room> queryWrapper = new QueryWrapper();
+        queryWrapper.select("room_id", "user_id", "room_title", "room_photo", "room_status", "room_type");
         queryWrapper.eq("room_status",1).eq("room_type", RoomType.res.get(classify));
-        List<Room> roomList = roomService.list(queryWrapper);
+        Page roomList = roomService.page(page, queryWrapper);
         return success(roomList);
+    }
+
+
+    /**
+     *  点击直播间后获取信息，如房间信息、直播信息、房间热度。 动态另外获取
+     * @param roomId
+     * @param userId
+     * @return
+     */
+    @GetMapping("getRoomInfo")
+    public R getRoomInfo(long roomId, long userId) {
+        RoomInfo roomInfo = new RoomInfo();
+        // 房间信息
+        QueryWrapper<Room> roomQueryWrapper = new QueryWrapper();
+        roomQueryWrapper.select("room_announcement", "create_time").eq("room_id", roomId);
+        Room room = roomService.getOne(roomQueryWrapper);
+        room.setRoomId(roomId);
+        roomInfo.setRoom(room);
+
+        // 热度
+        roomInfo.setHot(redisUtil.zScore("recommand", roomId).longValue());
+
+        // 主播信息
+        roomInfo.setUser(userService.getUserInfo(userId));
+
+        return success(roomInfo);
     }
 
     /**

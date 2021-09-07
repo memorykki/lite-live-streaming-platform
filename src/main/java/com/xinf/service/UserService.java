@@ -12,6 +12,8 @@ import com.xinf.entity.User;
  */
 public interface UserService extends IService<User> {
 
+    public UserInfo getUserInfo(long userId);
+
     public boolean registerUser(User user, int code);
 
     public UserInfo login(String auth, String password);

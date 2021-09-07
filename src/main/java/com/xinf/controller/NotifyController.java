@@ -1,11 +1,8 @@
 package com.xinf.controller;
 import com.xinf.entity.Playback;
 import com.xinf.entity.Room;
-import com.xinf.entity.UserWatchHistory;
 import com.xinf.service.PlaybackService;
 import com.xinf.service.RoomService;
-import com.xinf.service.UserService;
-import com.xinf.service.UserWatchHistoryService;
 import com.xinf.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("notify")
 public class NotifyController {
-    @Autowired
-    UserService userService;
+
     @Autowired
     RoomService roomService;
     @Autowired
@@ -40,12 +36,12 @@ public class NotifyController {
     RedisUtil redisUtil;
 
     @RequestMapping("/publish")
-    public boolean publish(@RequestParam String name){
-        Room room = roomService.getById(name);
+    public boolean publish(@RequestParam long id){
+        Room room = roomService.getById(id);
         if(room != null) {
             room.setRoomStatus(1);
             roomService.updateById(room);
-            log.info(name+"开始推流");
+            log.info("房间号: {}开始推流", id);
             return true;
         }else{
             return false;
@@ -53,43 +49,45 @@ public class NotifyController {
     }
 
     @RequestMapping("/publish_done")
-    public boolean publish_done(@RequestParam String name){
-        Room room = roomService.getById(name);
+    public boolean publish_done(@RequestParam long id){
+        Room room = roomService.getById(id);
         if(room != null) {
             room.setRoomStatus(0);
             roomService.updateById(room);
-            log.info(name+"关闭推流");
+            log.info("房间号: {} 关闭推流", id);
             return true;
         }else{
             return false;
         }
     }
 
+    // roomName : 房间id
     @RequestMapping("/play")
-    public boolean play(@RequestParam String name){
-        if(redisUtil.zScore("recommand",name)==null){
-            redisUtil.zAdd("recommand",name,0);
+    public boolean play(@RequestParam String roomName){
+        if(redisUtil.zScore("recommand", roomName) == null){
+            redisUtil.zAdd("recommand", roomName,0);
         }else{
-            redisUtil.zIncrementScore("recommand",name,1);
+            redisUtil.zIncrementScore("recommand", roomName,1);
         }
         return true;
     }
 
     @RequestMapping("/play_done")
-    public boolean play_done(@RequestParam String name){
-        if(redisUtil.zScore("recommand",name)!=null){
-            redisUtil.zIncrementScore("recommand",name,-1);
+    public boolean play_done(@RequestParam String roomName){
+        if(redisUtil.zScore("recommand",roomName) != null){
+            redisUtil.zIncrementScore("recommand",roomName,-1);
         }
         return true;
     }
 
     @RequestMapping("/record_done")
-    public boolean record_done(@RequestParam String name,
+    public boolean record_done(@RequestParam long roomId,
                                @RequestParam String path){
         Playback playback = new Playback();
-        playback.setRoomId(Long.parseLong(name));
+        playback.setRoomId(roomId);
         playback.setPlaybackPath(path);
-        log.info("直播间:"+name+"  保存回放；"+path);
+        playbackService.save(playback);
+        log.info("直播间: {} 保存回放， 地址为 {}", roomId, path);
         return true;
     }
 }
