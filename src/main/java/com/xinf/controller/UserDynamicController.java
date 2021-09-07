@@ -79,9 +79,10 @@ public class UserDynamicController extends ApiController {
         userDynamic.setUserId(userId);
         userDynamic.setDynamicType(type);
         if (file != null && !file.isEmpty()) {
-            String fileName = filePathConstant.dynamicFilePath + UUIDUtil.getUUID();
+            String uuid = UUIDUtil.getUUID();
+            String fileUrl = filePathConstant.dynamicFileUrl + uuid;
             // 创建文件实例
-            File filePath = new File(fileName);
+            File filePath = new File(filePathConstant.dynamicFilePath, uuid);
             // 如果文件目录不存在，创建目录
             if (!filePath.getParentFile().exists()) {
                 filePath.getParentFile().mkdirs();
@@ -89,7 +90,7 @@ public class UserDynamicController extends ApiController {
             }
             // 写入文件
             file.transferTo(filePath);
-            userDynamic.setDynamicContent(fileName);
+            userDynamic.setDynamicContent(fileUrl);
         } else if (message != null && !message.isEmpty()){
             userDynamic.setDynamicContent(message);
         } else {
