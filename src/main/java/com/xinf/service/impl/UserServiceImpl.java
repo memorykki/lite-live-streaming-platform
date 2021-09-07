@@ -6,6 +6,7 @@ import com.xinf.constant.SecurityProperties;
 import com.xinf.dao.UserDao;
 import com.xinf.dto.UserInfo;
 import com.xinf.entity.User;
+import com.xinf.service.RoleService;
 import com.xinf.service.UserService;
 import com.xinf.util.EmailUtil;
 import com.xinf.util.RedisUtil;
@@ -34,6 +35,9 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
 
     @Autowired
+    private RoleService roleService;
+
+    @Autowired
     private SecurityProperties securityProperties;
 
     @Autowired
@@ -44,6 +48,15 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Override
+    public UserInfo getUserInfo(long userId) {
+        UserInfo userInfo = new UserInfo();
+        User u = getById(userId);
+        userInfo.setUser(u);
+        userInfo.setRole(roleService.getById(u.getRoleId()));
+        return userInfo;
+    }
 
     @Override
     public boolean registerUser(User user, int code) {

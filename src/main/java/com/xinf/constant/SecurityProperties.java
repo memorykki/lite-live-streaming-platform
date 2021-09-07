@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "live-streaming-platform.jwt")
 @Data
 public class SecurityProperties {
-    public String secret;
     public int expire;
     public String salt;
 }
