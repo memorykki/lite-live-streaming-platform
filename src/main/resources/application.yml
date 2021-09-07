@@ -36,7 +36,8 @@ live-streaming-platform:
     expire: 604800  # 过期时间
     salt: cdsjklew12390d012jk1jd520dw # 加密盐
   filepath:
-    dynamicFilePath:
+    dynamicFilePath: /usr/local/nginx/html/file/dynamicfile/
+    dynamicFileUrl: http://ts.memorykk.cn:1936/file/dynamicfile/
 
 logging:
   file:

@@ -11,4 +11,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "live-streaming-platform.filepath")
 public class FilePathConstant {
     public String dynamicFilePath;
+    public String dynamicFileUrl;
 }

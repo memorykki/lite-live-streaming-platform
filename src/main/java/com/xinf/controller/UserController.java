@@ -51,14 +51,13 @@ public class UserController extends ApiController {
 
     /**
      * 分页查询所有数据
-     *
-     * @param page 分页对象
      * @param user 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<User> page, User user) {
-        log.info("info page: {}, user ：{}", page, user);
+    public R selectAll(User user,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.userService.page(page, new QueryWrapper<>(user)));
     }
 
