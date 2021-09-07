@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinf.constant.RoomType;
 import com.xinf.entity.Room;
 import com.xinf.entity.UserWatchHistory;
 import com.xinf.service.RoomService;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,22 +35,23 @@ public class RoomController extends ApiController {
     @Autowired
     RedisUtil redisUtil;
 
-    @GetMapping("selectAllEfficient")
-    public R selectAllEfficient(){
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("room_status",1);
-        queryWrapper.groupBy("room_type");
-        List normalList = roomService.list(queryWrapper);
+    @GetMapping("selectRankingList")
+    public R selectRankingList(){
 
         Set<String> roomSet = redisUtil.zReverseRangeByScore("recommand", 0, 5);
         QueryWrapper<Room> recommandQueryWrapper = new QueryWrapper();
         recommandQueryWrapper.in("room_id",roomSet);
-        List<Room> recommandList = roomService.list(recommandQueryWrapper);
+        List<Room> roomList = roomService.list(recommandQueryWrapper);
 
-        Map<String,List> map = new HashMap<>();
-        map.put("normalList",normalList);
-        map.put("recommandList",recommandList);
-        return success(map);
+        return success(roomList);
+    }
+
+    @GetMapping("selectClassifyList")
+    public R selectClassifyList(String classify) {
+        QueryWrapper<Room> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("room_status",1).eq("room_type", RoomType.res.get(classify));
+        List<Room> roomList = roomService.list(queryWrapper);
+        return success(roomList);
     }
 
     /**

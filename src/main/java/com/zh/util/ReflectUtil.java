@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * 反射操作工具
- * 
+ *
  * @author eguid
  *
  */
@@ -83,7 +83,7 @@ public class ReflectUtil {
 
 	/**
 	 * 执行方法
-	 * 
+	 *
 	 * @param m
 	 *            - 方法
 	 * @param obj
@@ -106,7 +106,7 @@ public class ReflectUtil {
 
 	/**
 	 * 通过class实例化
-	 * 
+	 *
 	 * @param oc
 	 * @return
 	 * @throws InstantiationException
@@ -118,10 +118,9 @@ public class ReflectUtil {
 
 	/**
 	 * 获取方法字段
-	 * 
+	 *
 	 * @param methodName
 	 * @param prefix
-	 * @param lowercase
 	 * @return
 	 */
 	public static String getMethodField(String methodName, String prefix) {
@@ -137,7 +136,7 @@ public class ReflectUtil {
 
 	/**
 	 * 首字母大写
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -151,7 +150,7 @@ public class ReflectUtil {
 
 	/**
 	 * 首字母小写
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
