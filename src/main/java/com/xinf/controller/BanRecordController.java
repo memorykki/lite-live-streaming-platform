@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.constant.FilePathConstant;
+import com.xinf.entity.BanPermission;
 import com.xinf.entity.BanRecord;
+import com.xinf.service.BanPermissionService;
 import com.xinf.service.BanRecordService;
 import com.xinf.util.UUIDUtil;
 import io.swagger.annotations.Api;
@@ -42,6 +44,9 @@ public class BanRecordController extends ApiController {
     @Resource
     private FilePathConstant filePathConstant;
 
+    @Resource
+    private BanPermissionService banPermissionService;
+
     /**
      * 分页查询所有数据
      * @param banRecord 查询实体
@@ -72,7 +77,7 @@ public class BanRecordController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    @ApiOperation("添加一条举报信息")
+    @ApiOperation(value = "添加一条举报信息", notes = "这条信息应该是待审核的")
     public R insert(@RequestBody BanRecord banRecord,
                     @RequestParam(required = false) MultipartFile file) throws IOException {
         if (banRecord.getType() == 0) {
@@ -102,7 +107,25 @@ public class BanRecordController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @ApiOperation("修改ban记录信息，主要是status修改")
     public R update(@RequestBody BanRecord banRecord) {
+
+        if (banRecord.getStatus() == 1) {
+            // 封禁
+            BanPermission banPermission = new BanPermission();
+            banPermission.setUserId(banRecord.getUserId());
+            banPermission.setBanId(banRecord.getBanId());
+            if (banRecord.getType() == 1) {
+                banPermission.setLivingPermission(1);
+            } else {
+                banPermission.setChatPermission(1);
+                banPermission.setSendGiftPermission(1);
+            }
+            banPermissionService.saveOrUpdate(banPermission);
+        } else if (banRecord.getStatus() == 4) {
+            // 解封
+            banPermissionService.removeById(banRecord.getUserId());
+        }
         return success(this.banRecordService.updateById(banRecord));
     }
 

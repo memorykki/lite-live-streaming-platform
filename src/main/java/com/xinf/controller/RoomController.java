@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xinf.constant.RoomType;
 import com.xinf.dto.RoomInfo;
 import com.xinf.entity.Room;
 import com.xinf.entity.UserWatchHistory;
@@ -56,6 +55,9 @@ public class RoomController extends ApiController {
     public R selectRankingList(){
 
         Set<String> roomSet = redisUtil.zReverseRangeByScore("recommand", 0, 5);
+        if (roomSet.isEmpty()) {
+            return failed("房间热度没有！");
+        }
         QueryWrapper<Room> recommandQueryWrapper = new QueryWrapper();
         recommandQueryWrapper.select("room_id", "user_id", "room_title", "room_photo", "room_status", "room_type");
         recommandQueryWrapper.in("room_id", roomSet);
@@ -72,13 +74,13 @@ public class RoomController extends ApiController {
      */
     @GetMapping("selectClassifyList")
     @ApiOperation(value = "获取某一类别下的房间信息")
-    @ApiImplicitParams({@ApiImplicitParam(name = "classify", value = "类别名称， e.q.游戏")})
-    public R selectClassifyList(String classify,
+    @ApiImplicitParams({@ApiImplicitParam(name = "classify", value = "类别编号， e.q.游戏-1")})
+    public R selectClassifyList(int classify,
              @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
         QueryWrapper<Room> queryWrapper = new QueryWrapper();
         queryWrapper.select("room_id", "user_id", "room_title", "room_photo", "room_status", "room_type");
-        queryWrapper.eq("room_status",1).eq("room_type", RoomType.res.get(classify));
+        queryWrapper.eq("room_status",1).eq("room_type", classify);
         Page roomList = roomService.page(page, queryWrapper);
         return success(roomList);
     }
