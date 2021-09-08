@@ -110,11 +110,13 @@ public class BanRecordController extends ApiController {
     @ApiOperation("修改ban记录信息，主要是status修改")
     public R update(@RequestBody BanRecord banRecord) {
 
-        if (banRecord.getStatus() == 1) {
+        if (banRecord.getStatus() == 2) {
             // 封禁
             BanPermission banPermission = new BanPermission();
             banPermission.setUserId(banRecord.getUserId());
-            banPermission.setBanId(banRecord.getBanId());
+            if (banRecord.getBanId() != null) {
+                banPermission.setBanId(banRecord.getBanId());
+            }
             if (banRecord.getType() == 1) {
                 banPermission.setLivingPermission(1);
             } else {
