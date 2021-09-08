@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.UserWatchHistory;
 import com.xinf.service.UserWatchHistoryService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,6 +29,15 @@ public class UserWatchHistoryController extends ApiController {
     @Resource
     private UserWatchHistoryService userWatchHistoryService;
 
+
+    @GetMapping("{id}")
+    @ApiOperation("获取本人观看历史")
+    public R select(@PathVariable Serializable id,
+            @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
+        return success(this.userWatchHistoryService.page(page, new QueryWrapper<UserWatchHistory>().eq("user_id", id)));
+    }
+
     /**
      * 分页查询所有数据
      *
@@ -35,21 +45,11 @@ public class UserWatchHistoryController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
+    @ApiOperation("获取观看历史数据")
     public R selectAll(UserWatchHistory userWatchHistory,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
         return success(this.userWatchHistoryService.page(page, new QueryWrapper<>(userWatchHistory)));
-    }
-
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.userWatchHistoryService.getById(id));
     }
 
     /**

@@ -10,6 +10,7 @@ import com.xinf.dto.RoomInfo;
 import com.xinf.entity.Room;
 import com.xinf.entity.UserWatchHistory;
 import com.xinf.service.RoomService;
+import com.xinf.service.UserFocusService;
 import com.xinf.service.UserService;
 import com.xinf.service.UserWatchHistoryService;
 import com.xinf.util.RedisUtil;
@@ -41,8 +42,10 @@ public class RoomController extends ApiController {
     private RoomService roomService;
     @Resource
     private UserWatchHistoryService userWatchHistoryService;
+    @Resource
+    private UserFocusService userFocusService;
     @Autowired
-    RedisUtil redisUtil;
+    private RedisUtil redisUtil;
 
     /**
      *  获取直播排行
@@ -90,8 +93,9 @@ public class RoomController extends ApiController {
     @GetMapping("getRoomInfo")
     @ApiOperation(value = "点击直播间后获取详细信息")
     @ApiImplicitParams({@ApiImplicitParam(name = "roomId", value = "房间标识"),
-                @ApiImplicitParam(name = "userId", value = "用户标识")})
-    public R getRoomInfo(long roomId, long userId) {
+                @ApiImplicitParam(name = "userId", value = "当前用户当前标识"),
+                @ApiImplicitParam(name = "anchorId", value = "主播身份标识")})
+    public R getRoomInfo(long roomId, long anchorId, long userId) {
         RoomInfo roomInfo = new RoomInfo();
         // 房间信息
         QueryWrapper<Room> roomQueryWrapper = new QueryWrapper();
@@ -104,8 +108,9 @@ public class RoomController extends ApiController {
         roomInfo.setHot(redisUtil.zScore("recommand", roomId).longValue());
 
         // 主播信息
-        roomInfo.setUser(userService.getUserInfo(userId));
+        roomInfo.setUser(userService.getUserInfo(anchorId));
 
+        roomInfo.setFocus(userFocusService.isFocus(userId, anchorId));
         return success(roomInfo);
     }
 

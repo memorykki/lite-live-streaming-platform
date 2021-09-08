@@ -43,6 +43,7 @@ public class GiftController extends ApiController {
     public R selectAll(Gift gift,
              @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Session session = SecurityUtils.getSubject().getSession();
+        log.info("test msg: {}", SecurityUtils.getSubject().getPrincipal());
         log.info("test shiro session, key:{}, timeout: {}, host: {}",
                 Strings.getCollectionString(session.getAttributeKeys()), session.getTimeout(), session.getHost());
         Page page = new Page(pageCurrent, pageSize, true);

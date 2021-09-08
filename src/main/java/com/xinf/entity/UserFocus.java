@@ -29,4 +29,8 @@ public class UserFocus implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
+    public UserFocus(Long focusUserId, Long focusedUserId) {
+        this.focusUserId = focusUserId;
+        this.focusedUserId = focusedUserId;
+    }
 }

@@ -70,17 +70,17 @@ public class UserFocusController extends ApiController {
         return success(this.userFocusService.page(page, new QueryWrapper<>(userFocus)));
     }
 
-
-    /**
-     * 新增数据
-     *
-     * @param userFocus 实体对象
-     * @return 新增结果
-     */
     @PostMapping
     @ApiOperation("点击关注")
     public R insert(@RequestBody UserFocus userFocus) {
         this.userFocusService.add(userFocus);
+        return success(null);
+    }
+
+    @DeleteMapping
+    @ApiOperation("取消关注")
+    public R delete(@RequestBody UserFocus userFocus) {
+        this.userFocusService.remove(userFocus);
         return success(null);
     }
 
