@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinf.dto.BanInfo;
 import com.xinf.entity.BanPermission;
 import com.xinf.service.BanPermissionService;
+import com.xinf.service.BanRecordService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,12 +25,16 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("banPermission")
+@Api(value = "用户ban controller", tags = { "用户ban访问接口" })
 public class BanPermissionController extends ApiController {
     /**
      * 服务对象
      */
     @Resource
     private BanPermissionService banPermissionService;
+
+    @Resource
+    private BanRecordService banRecordService;
 
     /**
      * 分页查询所有数据
@@ -43,12 +51,17 @@ public class BanPermissionController extends ApiController {
     /**
      * 通过主键查询单条数据
      *
-     * @param id 主键
+     * @param id 用户id
      * @return 单条数据
      */
     @GetMapping("{id}")
+    @ApiOperation("获取用户ban信息")
     public R selectOne(@PathVariable Serializable id) {
-        return success(this.banPermissionService.getById(id));
+        BanInfo banInfo = new BanInfo();
+        BanPermission banPermission = banPermissionService.getById(id);
+        banInfo.setBanPermission(banPermission);
+        banInfo.setBanRecord(banRecordService.getById(banPermission.getBanId()));
+        return success(banInfo);
     }
 
     /**
