@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.CoinHistory;
 import com.xinf.service.CoinHistoryService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("coinHistory")
+@Api(value = "投币历史controller", tags = { "投币历史访问接口" })
 public class CoinHistoryController extends ApiController {
     /**
      * 服务对象
