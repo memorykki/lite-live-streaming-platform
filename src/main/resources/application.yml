@@ -41,6 +41,8 @@ live-streaming-platform:
   filepath:
     dynamicFilePath: /usr/local/nginx/html/file/dynamicfile/
     dynamicFileUrl: http://ts.memorykk.cn:1936/file/dynamicfile/
+    banFilePath: /usr/local/nginx/html/file/banfile/
+    banFileUrl: http://ts.memorykk.cn:1936/file/banfile/
 
 logging:
   file:
