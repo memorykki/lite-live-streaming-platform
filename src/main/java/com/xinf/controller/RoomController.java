@@ -13,6 +13,10 @@ import com.xinf.service.RoomService;
 import com.xinf.service.UserService;
 import com.xinf.service.UserWatchHistoryService;
 import com.xinf.util.RedisUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +30,7 @@ import java.util.Set;
  * @author makejava
  * @since 2021-08-31 19:25:18
  */
+@Api(value = "房间controller", tags = { "房间访问接口" })
 @RestController
 @RequestMapping("room")
 public class RoomController extends ApiController {
@@ -44,6 +49,7 @@ public class RoomController extends ApiController {
      * @return
      */
     @GetMapping("selectRankingList")
+    @ApiOperation(value = "获取排行榜中的房间信息")
     public R selectRankingList(){
 
         Set<String> roomSet = redisUtil.zReverseRangeByScore("recommand", 0, 5);
@@ -62,6 +68,8 @@ public class RoomController extends ApiController {
      * @return
      */
     @GetMapping("selectClassifyList")
+    @ApiOperation(value = "获取某一类别下的房间信息")
+    @ApiImplicitParams({@ApiImplicitParam(name = "classify", value = "类别名称， e.q.游戏")})
     public R selectClassifyList(String classify,
              @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -80,6 +88,9 @@ public class RoomController extends ApiController {
      * @return
      */
     @GetMapping("getRoomInfo")
+    @ApiOperation(value = "点击直播间后获取详细信息")
+    @ApiImplicitParams({@ApiImplicitParam(name = "roomId", value = "房间标识"),
+                @ApiImplicitParam(name = "userId", value = "用户标识")})
     public R getRoomInfo(long roomId, long userId) {
         RoomInfo roomInfo = new RoomInfo();
         // 房间信息

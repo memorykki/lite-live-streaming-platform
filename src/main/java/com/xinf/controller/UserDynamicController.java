@@ -12,7 +12,12 @@ import com.xinf.entity.UserLikeDynamic;
 import com.xinf.service.UserDynamicService;
 import com.xinf.service.UserLikeDynamicService;
 import com.xinf.util.UUIDUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +36,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("userDynamic")
+@Api(value = "用户动态controller", tags = { "用户动态访问接口" })
 public class UserDynamicController extends ApiController {
     /**
      * 服务对象
@@ -48,6 +54,8 @@ public class UserDynamicController extends ApiController {
      *  获取用户动态
      */
     @GetMapping("/list")
+    @ApiOperation("获取用户动态")
+    @ApiImplicitParam(name = "userId", value = "需要获取动态所属用户的id")
     public R getUserDynamicList(long userId,
          @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -62,6 +70,10 @@ public class UserDynamicController extends ApiController {
      * @return
      */
     @PutMapping("/like")
+    @Transactional
+    @ApiOperation("点赞某个动态")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "点赞者的用户标识id"),
+            @ApiImplicitParam(name = "dynamicId", value = "动态id")})
     public R like(long userId, long dynamicId) {
         userDynamicService.update(new UpdateWrapper<UserDynamic>().eq("dynamicId", dynamicId)
                 .setSql("dynamic_like = dynamic_like + 1"));
@@ -73,6 +85,10 @@ public class UserDynamicController extends ApiController {
      * 发布动态
      */
     @PostMapping("/publish")
+    @ApiOperation("发布动态")
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "发布用户id"),
+            @ApiImplicitParam(name = "file", value = "上传视频或图片", required = false),
+            @ApiImplicitParam(name = "message", value = "动态信息，与file冲突，只选一个", required = false)})
     public R publish(int type, @RequestParam long userId,
           @RequestParam(required = false) MultipartFile file, @RequestParam(required = false) String message) throws IOException {
         UserDynamic userDynamic = new UserDynamic();
