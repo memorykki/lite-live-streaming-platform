@@ -15,9 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * (UserFocus)表控制层
@@ -58,8 +56,6 @@ public class UserFocusController extends ApiController {
         return success(ans);
     }
 
-    @PostMapping("/focus")
-
 
     /**
      * 分页查询所有数据
@@ -74,16 +70,6 @@ public class UserFocusController extends ApiController {
         return success(this.userFocusService.page(page, new QueryWrapper<>(userFocus)));
     }
 
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.userFocusService.getById(id));
-    }
 
     /**
      * 新增数据
@@ -92,8 +78,10 @@ public class UserFocusController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @ApiOperation("点击关注")
     public R insert(@RequestBody UserFocus userFocus) {
-        return success(this.userFocusService.save(userFocus));
+        this.userFocusService.add(userFocus);
+        return success(null);
     }
 
     /**
@@ -107,14 +95,4 @@ public class UserFocusController extends ApiController {
         return success(this.userFocusService.updateById(userFocus));
     }
 
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.userFocusService.removeByIds(idList));
-    }
 }

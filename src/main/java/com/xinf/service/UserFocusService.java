@@ -11,4 +11,5 @@ import com.xinf.entity.UserFocus;
  */
 public interface UserFocusService extends IService<UserFocus> {
 
+    void add(UserFocus userFocus);
 }
