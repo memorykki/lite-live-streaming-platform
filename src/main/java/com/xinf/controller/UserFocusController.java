@@ -9,13 +9,13 @@ import com.xinf.dto.UserFocusInfo;
 import com.xinf.entity.UserFocus;
 import com.xinf.service.UserFocusService;
 import com.xinf.service.UserService;
+import com.xinf.util.BeanUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
 /**
  * (UserFocus)表控制层
@@ -46,14 +46,9 @@ public class UserFocusController extends ApiController {
                                 @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
         Page<UserFocus> list = userFocusService.page(page, new QueryWrapper<UserFocus>().eq("focus_user_id", userId));
-        UserFocusInfo[] res = list.getRecords().parallelStream().map(e ->
-                new UserFocusInfo(userService.getUserInfo(e.getFocusedUserId()), e.getUpdateTime())).toArray(UserFocusInfo[]::new);
-        Page<UserFocusInfo> ans = new Page<>();
-        ans.setTotal(page.getTotal());
-        ans.setCurrent(page.getCurrent());
-        ans.setSize(page.getSize());
-        ans.setRecords(Arrays.asList(res));
-        return success(ans);
+        return success(BeanUtil.transPage(list,
+                (e) -> new UserFocusInfo(userService.getUserInfo(e.getFocusedUserId()), e.getUpdateTime()),
+                UserFocusInfo[]::new));
     }
 
 
