@@ -5,11 +5,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinf.constant.FilePathConstant;
 import com.xinf.entity.BanRecord;
 import com.xinf.service.BanRecordService;
+import com.xinf.util.UUIDUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,12 +30,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("banRecord")
+@Slf4j
+@Api(value = "举报记录controller", tags = { "举报记录访问接口" })
 public class BanRecordController extends ApiController {
     /**
      * 服务对象
      */
     @Resource
     private BanRecordService banRecordService;
+
+    @Resource
+    private FilePathConstant filePathConstant;
 
     /**
      * 分页查询所有数据
@@ -59,7 +72,26 @@ public class BanRecordController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    public R insert(@RequestBody BanRecord banRecord) {
+    @ApiOperation("添加一条举报信息")
+    public R insert(@RequestBody BanRecord banRecord,
+                    @RequestParam(required = false) MultipartFile file) throws IOException {
+        if (banRecord.getType() == 0) {
+            if (file == null || file.isEmpty()) {
+                return failed("直播图片不存在");
+            }
+            String uuid = UUIDUtil.getUUID();
+            String fileUrl = filePathConstant.banFileUrl + uuid;
+            // 创建文件实例
+            File filePath = new File(filePathConstant.dynamicFilePath, uuid);
+            // 如果文件目录不存在，创建目录
+            if (!filePath.getParentFile().exists()) {
+                filePath.getParentFile().mkdirs();
+                log.info("创建目录 : {}", filePath.getParentFile().getName());
+            }
+            // 写入文件
+            file.transferTo(filePath);
+            banRecord.setEvidence(fileUrl);
+        }
         return success(this.banRecordService.save(banRecord));
     }
 

@@ -12,4 +12,6 @@ import org.springframework.stereotype.Component;
 public class FilePathConstant {
     public String dynamicFilePath;
     public String dynamicFileUrl;
+    public String banFilePath;
+    public String banFileUrl;
 }
