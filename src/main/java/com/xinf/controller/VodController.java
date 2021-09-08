@@ -8,13 +8,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.Vod;
 import com.xinf.service.VodService;
 import org.springframework.web.bind.annotation.*;
-import com.zh.CommandManager;
-import com.zh.CommandManagerImpl;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -35,12 +31,13 @@ public class VodController extends ApiController {
     /**
      * 分页查询所有数据
      *
-     * @param page 分页对象
      * @param vod  查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<Vod> page, Vod vod) {
+    public R selectAll(Vod vod,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.vodService.page(page, new QueryWrapper<>(vod)));
     }
 

@@ -31,12 +31,13 @@ public class PlaybackController extends ApiController {
     /**
      * 分页查询所有数据
      *
-     * @param page     分页对象
      * @param playback 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<Playback> page, Playback playback) {
+    public R selectAll(Playback playback,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.playbackService.page(page, new QueryWrapper<>(playback)));
     }
 

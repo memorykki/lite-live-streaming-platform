@@ -30,13 +30,13 @@ public class GiftRecordController extends ApiController {
 
     /**
      * 分页查询所有数据
-     *
-     * @param page       分页对象
      * @param giftRecord 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<GiftRecord> page, GiftRecord giftRecord) {
+    public R selectAll(GiftRecord giftRecord,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.giftRecordService.page(page, new QueryWrapper<>(giftRecord)));
     }
 

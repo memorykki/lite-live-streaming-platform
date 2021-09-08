@@ -30,13 +30,13 @@ public class RoleController extends ApiController {
 
     /**
      * 分页查询所有数据
-     *
-     * @param page 分页对象
      * @param role 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<Role> page, Role role) {
+    public R selectAll(Role role,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.roleService.page(page, new QueryWrapper<>(role)));
     }
 
