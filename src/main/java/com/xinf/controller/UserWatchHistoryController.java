@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.UserWatchHistory;
 import com.xinf.service.UserWatchHistoryService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("userWatchHistory")
+@Api(value = "用户观看历史controller", tags = { "用户观看历史访问接口" })
 public class UserWatchHistoryController extends ApiController {
     /**
      * 服务对象
