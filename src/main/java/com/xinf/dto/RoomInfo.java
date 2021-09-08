@@ -27,4 +27,6 @@ public class RoomInfo implements Serializable {
     // 房间热度
     @ApiModelProperty(value = "房间热度")
     private long hot;
+    @ApiModelProperty(value = "是否关注主播")
+    private boolean isFocus;
 }

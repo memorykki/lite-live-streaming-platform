@@ -1,5 +1,6 @@
 package com.xinf.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xinf.dao.UserFocusDao;
@@ -27,9 +28,22 @@ public class UserFocusServiceImpl extends ServiceImpl<UserFocusDao, UserFocus> i
     @Override
     @Transactional
     public void add(UserFocus userFocus) {
-        User user = new User();
-        user.setUserId(userFocus.getFocusedUserId());
-        userService.update(new UpdateWrapper<User>().eq("user_id", userFocus.getFocusedUserId()).setSql("user_fans_count = user_fans_count + 1"));
         save(userFocus);
+        userService.update(new UpdateWrapper<User>().eq("user_id", userFocus.getFocusedUserId())
+                .setSql("user_fans_count = user_fans_count + 1"));
+    }
+
+    @Override
+    @Transactional
+    public void remove(UserFocus userFocus) {
+        super.remove(new QueryWrapper<UserFocus>(userFocus));
+        userService.update(new UpdateWrapper<User>().eq("user_id", userFocus.getFocusedUserId())
+                .setSql("user_fans_count = user_fans_count - 1"));
+    }
+
+    @Override
+    public boolean isFocus(long focusId, long focusedId) {
+        UserFocus userFocus = new UserFocus(focusId, focusedId);
+        return count(new QueryWrapper<>(userFocus)) > 0;
     }
 }

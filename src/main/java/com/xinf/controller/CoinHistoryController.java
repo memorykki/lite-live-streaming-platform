@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.CoinHistory;
 import com.xinf.service.CoinHistoryService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,12 +29,15 @@ public class CoinHistoryController extends ApiController {
     @Resource
     private CoinHistoryService coinHistoryService;
 
+
+
     /**
      * 分页查询所有数据
      * @param coinHistory 查询实体
      * @return 所有数据
      */
     @GetMapping
+    @ApiOperation("获取投币历史数据")
     public R selectAll(CoinHistory coinHistory,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -41,14 +45,16 @@ public class CoinHistoryController extends ApiController {
     }
 
     /**
-     * 通过主键查询单条数据
+     * 通过用户id获取数据
      *
      * @param id 主键
      * @return 单条数据
      */
     @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.coinHistoryService.getById(id));
+    public R selectOne(@PathVariable Serializable id,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
+        return success(this.coinHistoryService.page(page, new QueryWrapper<CoinHistory>().eq("user_id", id)));
     }
 
     /**
@@ -58,6 +64,7 @@ public class CoinHistoryController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @ApiOperation(value = "新增投币记录", notes = "其关系到总货币数量，用户等级提升等")
     public R insert(@RequestBody CoinHistory coinHistory) {
         return success(this.coinHistoryService.save(coinHistory));
     }

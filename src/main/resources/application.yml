@@ -31,6 +31,7 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
   configuration:
     cache-enabled: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 live-streaming-platform:
