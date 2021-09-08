@@ -13,12 +13,17 @@ import com.xinf.util.EmailUtil;
 import com.xinf.util.RedisUtil;
 import com.xinf.util.SmsUtil;
 import com.xinf.util.Strings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  */
 @RestController
 @RequestMapping("user")
-@CrossOrigin
+@Api(value = "用户Controller", tags = { "用户访问接口" })
 @Slf4j
 public class UserController extends ApiController {
     /**
@@ -55,9 +60,11 @@ public class UserController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(User user,
+    @ApiOperation(value = "查询所有用户")
+    public R selectAll(User user, HttpServletRequest request,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
+        log.info("selectUser request info, Remotehost : {}, path: {}", request.getRemoteHost(), request.getPathInfo());
         return success(this.userService.page(page, new QueryWrapper<>(user)));
     }
 
@@ -68,6 +75,7 @@ public class UserController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
+    @ApiOperation(value = "查询单个用户")
     public R selectOne(@PathVariable Serializable id) {
         return success(this.userService.getById(id));
     }
@@ -79,6 +87,7 @@ public class UserController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @ApiOperation(value = "添加一个用户")
     public R insert(@RequestBody User user) {
         return success(this.userService.save(user));
     }
@@ -90,6 +99,7 @@ public class UserController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @ApiOperation(value = "修改用户数据")
     public R update(@RequestBody User user) {
         return success(this.userService.updateById(user));
     }
@@ -101,11 +111,15 @@ public class UserController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation(value = "删除用户")
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.userService.removeByIds(idList));
     }
 
     @PostMapping("/register")
+    @ApiOperation(value = "注册用户")
+    @ApiImplicitParams({@ApiImplicitParam(name = "user", value = "用户注册信息"),
+            @ApiImplicitParam(name = "code", value = "验证码")})
     public R register(@RequestBody User user, @RequestParam(defaultValue = "-1") int code) {
         if (userService.registerUser(user, code)) {
             return success(null);
@@ -118,6 +132,7 @@ public class UserController extends ApiController {
      * 用户登录
      */
     @GetMapping("/login")
+    @ApiOperation(value = "用户登录")
     public R login(String auth, String passwd) {
 
         if (StringUtils.isBlank(auth)) {
@@ -142,6 +157,7 @@ public class UserController extends ApiController {
      * description: 登出
      */
     @GetMapping("/logout")
+    @ApiOperation(value = "用户登出")
     public R logOut() {
         userService.logout();
         return success("登出成功！");
@@ -164,6 +180,7 @@ public class UserController extends ApiController {
     }
 
     @RequestMapping("/sendVerifiableCode")
+    @ApiOperation(value = "发送验证码")
     public R<Object> sendVerifiableCode(String distAddress){
         log.info("注册用户地址：{}", distAddress);
         int code = 0;

@@ -3,9 +3,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://ts.memorykk.cn:3306/lite-living-streaming?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      url: jdbc:mysql://101.200.54.21:3306/lite-living-streaming?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
       username: root
-      password: root
+      password: root123456
       # 初始化大小，最小，最大连接数, 连接超时
       initial-size: 10
       max-active: 100
@@ -26,7 +26,8 @@ spring:
         enabled: true
         url-pattern: /druid/*
         login-username: admin
-        login-password: admin
+        login-password: admin123456
+        allow:
       # 过滤器
       filter:
         stat:
