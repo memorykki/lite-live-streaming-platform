@@ -2,12 +2,13 @@ package com.xinf.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * (ApplyAnchorRecord)实体类
@@ -25,6 +26,7 @@ public class ApplyAnchorRecord implements Serializable {
     /**
     * 申请时间
     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date applyTime;
     /**
     * 申请原因
