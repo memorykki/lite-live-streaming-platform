@@ -119,12 +119,13 @@ public class UserDynamicController extends ApiController {
     /**
      * 分页查询所有数据
      *
-     * @param page        分页对象
      * @param userDynamic 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<UserDynamic> page, UserDynamic userDynamic) {
+    public R selectAll(UserDynamic userDynamic,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.userDynamicService.page(page, new QueryWrapper<>(userDynamic)));
     }
 

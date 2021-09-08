@@ -30,13 +30,13 @@ public class BanPermissionController extends ApiController {
 
     /**
      * 分页查询所有数据
-     *
-     * @param page          分页对象
      * @param banPermission 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<BanPermission> page, BanPermission banPermission) {
+    public R selectAll(BanPermission banPermission,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.banPermissionService.page(page, new QueryWrapper<>(banPermission)));
     }
 

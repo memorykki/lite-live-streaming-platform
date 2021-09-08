@@ -1,21 +1,19 @@
 package com.xinf.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.LiveTogether;
-import com.xinf.entity.User;
 import com.xinf.service.LiveTogetherService;
 import com.zh.CommandManager;
 import com.zh.CommandManagerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Enumeration;
-import com.baomidou.mybatisplus.extension.api.ApiController;
 
 /**
  * (LiveTogether)表控制层
@@ -67,13 +65,13 @@ public class LiveTogetherController extends ApiController{
 
     /**
      * 分页查询所有数据
-     *
-     * @param page 分页对象
      * @param liveTogether 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<LiveTogether> page, LiveTogether liveTogether) {
+    public R selectAll(LiveTogether liveTogether,
+                       @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(liveTogetherService.page(page, new QueryWrapper<>(liveTogether)));
     }
     /**

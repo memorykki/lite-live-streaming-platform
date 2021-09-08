@@ -30,13 +30,14 @@ public class UserLikeDynamicController extends ApiController {
 
     /**
      * 分页查询所有数据
-     *
-     * @param page            分页对象
+
      * @param userLikeDynamic 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<UserLikeDynamic> page, UserLikeDynamic userLikeDynamic) {
+    public R selectAll(UserLikeDynamic userLikeDynamic,
+            @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.userLikeDynamicService.page(page, new QueryWrapper<>(userLikeDynamic)));
     }
 
