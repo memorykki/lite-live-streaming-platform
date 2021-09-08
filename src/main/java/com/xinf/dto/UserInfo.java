@@ -19,15 +19,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ApiModel(description= "用户信息")
 public class UserInfo implements Serializable {
-    @ApiModelProperty(value = "token")
-    private String token;
+    //@ApiModelProperty(value = "token")
+    //private String token;
     @ApiModelProperty(value = "用户信息")
     private User user;
     @ApiModelProperty(value = "用户角色信息")
     private Role role;
-
-    public UserInfo(User user, Role role) {
-        this.user = user;
-        this.role = role;
-    }
 }

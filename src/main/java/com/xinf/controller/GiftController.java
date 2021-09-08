@@ -7,6 +7,9 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.Gift;
 import com.xinf.service.GiftService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -19,6 +22,7 @@ import java.util.List;
  * @author makejava
  * @since 2021-08-31 19:25:17
  */
+@Slf4j
 @RestController
 @RequestMapping("gift")
 public class GiftController extends ApiController {
@@ -31,12 +35,15 @@ public class GiftController extends ApiController {
     /**
      * 分页查询所有数据
      *
-     * @param page 分页对象
      * @param gift 查询实体
      * @return 所有数据
      */
     @GetMapping
-    public R selectAll(Page<Gift> page, Gift gift) {
+    public R selectAll(Gift gift,
+             @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
+        Session session = SecurityUtils.getSubject().getSession();
+        log.info("test shiro session,", session.getAttributeKeys());
+        Page page = new Page(pageCurrent, pageSize, true);
         return success(this.giftService.page(page, new QueryWrapper<>(gift)));
     }
 

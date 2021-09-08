@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.xinf.dto.UserInfo;
 import com.xinf.entity.User;
 
+import java.util.Map;
+
 /**
  * (User)表服务接口
  *
@@ -16,7 +18,7 @@ public interface UserService extends IService<User> {
 
     public boolean registerUser(User user, int code);
 
-    public UserInfo login(String auth, String password);
+    public Map<String, Object> login(String auth, String password);
 
     public void logout();
 

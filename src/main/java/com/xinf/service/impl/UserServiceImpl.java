@@ -23,6 +23,9 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * (User)表服务实现类
@@ -95,7 +98,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public UserInfo login(String auth, String password) {
+    public Map<String, Object> login(String auth, String password) {
         // 获取Subject实例对象，用户实例
         Subject currentUser = SecurityUtils.getSubject();
 
@@ -103,7 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         UsernamePasswordToken token = new UsernamePasswordToken(auth, password);
 
         UserInfo userInfo;
-
+        Map<String, Object> ans = new HashMap<>();
         // 4、认证
         try {
             // 传到 MyShiroRealm 类中的方法进行认证
@@ -111,8 +114,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             // 构建缓存用户信息返回给前端
             userInfo = (UserInfo) currentUser.getPrincipals().getPrimaryPrincipal();
             userInfo.getUser().setUserPasswd("");
-            userInfo.setToken(currentUser.getSession().getId().toString());
-            log.info("用户登录成功，用户名: {}, token: {}", userInfo.getUser().getUserName(), userInfo.getToken());
+            ans.put("userInfo", userInfo);
+            ans.put("token", currentUser.getSession().getId().toString());
+            log.info("用户登录成功，用户名: {}, token: {}", userInfo.getUser().getUserName(), ans.get("token"));
         } catch (UnknownAccountException e) {
             log.error("账户不存在异常：", e);
             throw new LoginException("账号不存在!", e);
@@ -123,7 +127,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             log.error("身份验证异常:", e);
             throw new LoginException("用户验证失败!", e);
         }
-        return userInfo;
+        return ans;
     }
 
     @Override

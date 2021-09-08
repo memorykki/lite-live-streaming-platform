@@ -1,14 +1,13 @@
 package com.xinf.dto;
 
 import com.xinf.entity.Room;
-import com.xinf.entity.UserDynamic;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.io.Serializable;
 
 /**
  * @author xinf
@@ -18,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(description= "详细房间信息")
-public class RoomInfo {
+public class RoomInfo implements Serializable {
     // 房间信息：id、标题、类型
     @ApiModelProperty(value = "房间信息")
     private Room room;
