@@ -59,7 +59,7 @@ public class UserDynamicController extends ApiController {
     public R getUserDynamicList(long userId,
          @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
-        Page<UserDynamic> list = userDynamicService.page(page, new QueryWrapper<UserDynamic>().eq("userId", userId));
+        Page<UserDynamic> list = userDynamicService.page(page, new QueryWrapper<UserDynamic>().eq("user_id", userId));
         return success(list);
     }
 

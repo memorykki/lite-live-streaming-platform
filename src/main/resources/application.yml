@@ -29,6 +29,8 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
+  configuration:
+    cache-enabled: true
 
 
 live-streaming-platform:

@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.xinf.dto.UserInfo;
 import com.xinf.entity.User;
 import com.xinf.service.UserService;
 import com.xinf.util.EmailUtil;
@@ -26,6 +25,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -64,7 +64,7 @@ public class UserController extends ApiController {
     public R selectAll(User user, HttpServletRequest request,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
-        log.info("selectUser request info, Remotehost : {}, path: {}", request.getRemoteHost(), request.getPathInfo());
+        log.info("selectUser request info, Remotehost : {}", request.getRemoteHost());
         return success(this.userService.page(page, new QueryWrapper<>(user)));
     }
 
@@ -145,7 +145,7 @@ public class UserController extends ApiController {
 
         log.debug("auth : {}, passwd : {}", auth, passwd);
 
-        UserInfo loginUser = userService.login(auth, passwd);
+        Map<String, Object> loginUser = userService.login(auth, passwd);
 
         // 登录成功返回用户信息
         return success(loginUser);

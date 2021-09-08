@@ -1,5 +1,8 @@
 package com.xinf.util;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * @author xinf
  * @since 2021/9/1 20:46
@@ -25,5 +28,17 @@ public final class Strings {
             return false;
         }
         return s.contains("@");
+    }
+
+    // 打印集合字符串
+    public static<T> String getCollectionString(Collection<T> collection) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        Iterator<T> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            sb.append(iterator.next().toString() + ", ");
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }
