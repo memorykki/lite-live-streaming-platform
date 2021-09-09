@@ -1,5 +1,7 @@
 package com.xinf.util;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -40,5 +42,16 @@ public final class Strings {
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    public static String getFileType(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return "";
+        }
+        String contentType = file.getContentType();
+        String ans = contentType == null ? "" : (
+                "." + contentType.substring(contentType.lastIndexOf('/') + 1, contentType.length()));
+
+        return ans;
     }
 }

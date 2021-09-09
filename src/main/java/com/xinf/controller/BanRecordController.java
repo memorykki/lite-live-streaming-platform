@@ -10,15 +10,12 @@ import com.xinf.entity.BanPermission;
 import com.xinf.entity.BanRecord;
 import com.xinf.service.BanPermissionService;
 import com.xinf.service.BanRecordService;
-import com.xinf.util.UUIDUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -78,25 +75,7 @@ public class BanRecordController extends ApiController {
      */
     @PostMapping
     @ApiOperation(value = "添加一条举报信息", notes = "这条信息应该是待审核的")
-    public R insert(@RequestBody BanRecord banRecord,
-                    @RequestParam(required = false) MultipartFile file) throws IOException {
-        if (banRecord.getType() == 0) {
-            if (file == null || file.isEmpty()) {
-                return failed("直播图片不存在");
-            }
-            String uuid = UUIDUtil.getUUID();
-            String fileUrl = filePathConstant.banFileUrl + uuid;
-            // 创建文件实例
-            File filePath = new File(filePathConstant.dynamicFilePath, uuid);
-            // 如果文件目录不存在，创建目录
-            if (!filePath.getParentFile().exists()) {
-                filePath.getParentFile().mkdirs();
-                log.info("创建目录 : {}", filePath.getParentFile().getName());
-            }
-            // 写入文件
-            file.transferTo(filePath);
-            banRecord.setEvidence(fileUrl);
-        }
+    public R insert(@RequestBody BanRecord banRecord) throws IOException {
         return success(this.banRecordService.save(banRecord));
     }
 

@@ -1,6 +1,7 @@
 package com.xinf.util;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -13,6 +14,7 @@ import java.util.function.IntFunction;
  * @author xinf
  * @since 2021/9/8 14:51
  */
+@Slf4j
 public class BeanUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
@@ -24,6 +26,10 @@ public class BeanUtil implements ApplicationContextAware {
 
     public static Object getBean(String name) {
         return applicationContext.getBean(name);
+    }
+
+    public static<T> Object getBean(String name, Class<T> beanClass) {
+        return applicationContext.getBean(name, beanClass);
     }
 
     public static<T, E> Page<T> transPage(Page<E> page, T[] res) {

@@ -1,0 +1,13 @@
+live-streaming-platform:
+  jwt:
+    expire: 604800  # 过期时间
+    salt: cdsjklew12390d012jk1jd520dw # 加密盐
+  filepath:
+    dynamicFilePath: /dynamicfile/
+    dynamicFileUrl: http://172.29.3.78:8081/lite-live-streaming-platform/static/file/dynamicfile/
+    commonFilePath: /commonfile/
+    commonFileUrl: http://172.29.3.78:8081/lite-live-streaming-platform/static/file/commonfile/
+logging:
+  level:
+    com.xinf: debug
+

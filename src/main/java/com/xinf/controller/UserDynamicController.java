@@ -11,6 +11,7 @@ import com.xinf.entity.UserDynamic;
 import com.xinf.entity.UserLikeDynamic;
 import com.xinf.service.UserDynamicService;
 import com.xinf.service.UserLikeDynamicService;
+import com.xinf.util.Strings;
 import com.xinf.util.UUIDUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -95,10 +96,11 @@ public class UserDynamicController extends ApiController {
         userDynamic.setUserId(userId);
         userDynamic.setDynamicType(type);
         if (file != null && !file.isEmpty()) {
-            String uuid = UUIDUtil.getUUID();
+            String uuid = UUIDUtil.getUUID() + Strings.getFileType(file);
             String fileUrl = filePathConstant.dynamicFileUrl + uuid;
             // 创建文件实例
             File filePath = new File(filePathConstant.dynamicFilePath, uuid);
+            log.debug("file name:{}", filePath.toString());
             // 如果文件目录不存在，创建目录
             if (!filePath.getParentFile().exists()) {
                 filePath.getParentFile().mkdirs();

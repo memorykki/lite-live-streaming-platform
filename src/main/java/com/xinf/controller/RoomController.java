@@ -107,7 +107,7 @@ public class RoomController extends ApiController {
         roomInfo.setRoom(room);
 
         // 热度
-        roomInfo.setHot(redisUtil.zScore("recommand", roomId).longValue());
+        redisUtil.zScore("recommand", String.valueOf(roomId)).ifPresent(e -> roomInfo.setHot(e.longValue()));
 
         // 主播信息
         roomInfo.setUser(userService.getUserInfo(anchorId));
