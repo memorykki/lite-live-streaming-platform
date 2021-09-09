@@ -1264,8 +1264,8 @@ public class RedisUtil {
      * @param value
      * @return
      */
-    public Double zScore(String key, Object value) {
-        return redisTemplate.opsForZSet().score(key, value);
+    public Optional<Double> zScore(String key, Object value) {
+        return Optional.ofNullable(redisTemplate.opsForZSet().score(key, value));
     }
 
     /**

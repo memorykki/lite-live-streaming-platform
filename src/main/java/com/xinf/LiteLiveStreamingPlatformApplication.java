@@ -13,7 +13,6 @@ import java.net.UnknownHostException;
 @Slf4j
 public class LiteLiveStreamingPlatformApplication {
 
-
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(LiteLiveStreamingPlatformApplication.class, args);
         Environment env = application.getEnvironment();
