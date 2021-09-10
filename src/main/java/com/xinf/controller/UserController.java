@@ -201,7 +201,7 @@ public class UserController extends ApiController {
         }
 
         if (code > 0) {
-            redisUtil.append(distAddress, String.valueOf(code));
+            redisUtil.set(distAddress, String.valueOf(code));
             redisUtil.expire(distAddress, 600000, TimeUnit.MILLISECONDS);
             return success(null);
         }
