@@ -58,8 +58,8 @@ public class GiftRecordController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
-    public R insert(@RequestBody GiftRecord giftRecord) {
-        return success(this.giftRecordService.save(giftRecord));
+    public R insert(@RequestBody GiftRecord giftRecord, @RequestParam String reason) {
+        return success(this.giftRecordService.save(giftRecord, reason));
     }
 
     /**

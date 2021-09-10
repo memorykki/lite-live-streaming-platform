@@ -22,8 +22,8 @@ import java.util.function.Supplier;
 @Component
 public class WebSocketServer {
     /** 记录当前在线连接数 */
-    private LongAdder onlineCount = new LongAdder();
-    private Map<Long, Session> onLineSessions = new ConcurrentHashMap<Long, Session>();
+    static private LongAdder onlineCount = new LongAdder();
+    static private Map<Long, Session> onLineSessions = new ConcurrentHashMap<Long, Session>();
 
     /**
      * 连接建立成功调用的方法
