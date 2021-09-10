@@ -9,8 +9,11 @@ import javax.websocket.server.ServerEndpoint;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.function.Supplier;
 
 /**
+ * 转发消息格式
+ * "type", 类型, "message", 消息内容, "time", 当前时间, "form", 来自用户
  * @author xinf
  * @since 2021/9/10 14:50
  */
@@ -66,7 +69,19 @@ public class WebSocketServer {
     public void sendMessToUser(long userId, String message) {
         onLineSessions.computeIfPresent(userId, (k, v) -> {
             sendMessage(message, v);
-           return v;
+            return v;
+        });
+    }
+
+    /**
+     *  发送消息给用户，用于通知
+     * @param userId
+     * @param supplier
+     */
+    public void sendMessToUser(long userId, Supplier<String> supplier) {
+        onLineSessions.computeIfPresent(userId, (k, v) -> {
+            sendMessage(supplier.get(), v);
+            return v;
         });
     }
 

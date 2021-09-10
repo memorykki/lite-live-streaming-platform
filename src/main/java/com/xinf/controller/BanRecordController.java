@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.ImmutableMap;
 import com.xinf.constant.FilePathConstant;
 import com.xinf.entity.BanPermission;
 import com.xinf.entity.BanRecord;
 import com.xinf.handler.WebSocketServer;
 import com.xinf.service.BanPermissionService;
 import com.xinf.service.BanRecordService;
+import com.xinf.util.Strings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -76,11 +78,14 @@ public class BanRecordController extends ApiController {
      *
      * @param banRecord 实体对象
      * @return 新增结果
+     *
      */
     @PostMapping
     @ApiOperation(value = "添加一条举报信息", notes = "这条信息应该是待审核的")
     public R insert(@RequestBody BanRecord banRecord) throws IOException {
-
+        webSocketServer.sendMessToUser(banRecord.getUserId(), () -> Strings.getJsonString(
+                ImmutableMap.of("type", "1", "message", "尊敬的用户不好意思，你已被举报", "time", Strings.getDateString(),
+                        "form", "system")));
         return success(this.banRecordService.save(banRecord));
     }
 
