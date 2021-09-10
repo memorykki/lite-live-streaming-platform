@@ -1,8 +1,11 @@
 package com.xinf.util;
 
+import com.google.gson.Gson;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 /**
@@ -10,6 +13,9 @@ import java.util.Iterator;
  * @since 2021/9/1 20:46
  */
 public final class Strings {
+
+    public static Gson gson = new Gson();
+
     // 字符串是否全由数字组成
     public static boolean isConstitutedByDigit(String s) {
         if (s == null || s.isEmpty()) {
@@ -53,5 +59,13 @@ public final class Strings {
                 "." + contentType.substring(contentType.lastIndexOf('/') + 1, contentType.length()));
 
         return ans;
+    }
+
+    public static String getJsonString(Object o) {
+        return gson.toJson(o);
+    }
+
+    public static String getDateString() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 }
