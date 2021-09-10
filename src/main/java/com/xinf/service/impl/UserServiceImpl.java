@@ -62,17 +62,17 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public boolean registerUser(User user, int code) {
-        if (code == -1) {
+    public boolean registerUser(User user, int code, String auth) {
+        if (code == -1 || Strings.isNullOrEmpty(auth)) {
             return false;
         }
 
         // 检测code
-        String key;
-        if (!Strings.isNullOrEmpty(user.getUserEmail())) {
-            key = user.getUserEmail();
-        } else if (!Strings.isNullOrEmpty(user.getUserPhone())) {
-            key = user.getUserPhone();
+        String key = auth;
+        if (com.xinf.util.Strings.isEmail(auth)) {
+            user.setUserEmail(auth);
+        } else if (com.xinf.util.Strings.isConstitutedByDigit(auth)) {
+            user.setUserPhone(auth);
         } else {
             return false;
         }

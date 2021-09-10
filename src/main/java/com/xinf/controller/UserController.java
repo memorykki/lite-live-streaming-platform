@@ -124,8 +124,9 @@ public class UserController extends ApiController {
     @ApiOperation(value = "注册用户")
     @ApiImplicitParams({@ApiImplicitParam(name = "user", value = "用户注册信息"),
             @ApiImplicitParam(name = "code", value = "验证码")})
-    public R register(@RequestBody User user, @RequestParam(defaultValue = "-1") int code) {
-        if (userService.registerUser(user, code)) {
+    public R register(@RequestBody User user, @RequestParam(defaultValue = "-1") int code,
+                      @RequestParam String auth) {
+        if (userService.registerUser(user, code, auth)) {
             return success(null);
         } else {
             return failed("注册错误");
