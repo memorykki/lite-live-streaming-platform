@@ -16,7 +16,7 @@ public interface UserService extends IService<User> {
 
     public UserInfo getUserInfo(long userId);
 
-    public boolean registerUser(User user, int code);
+    public boolean registerUser(User user, int code, String auth);
 
     public Map<String, Object> login(String auth, String password);
 
