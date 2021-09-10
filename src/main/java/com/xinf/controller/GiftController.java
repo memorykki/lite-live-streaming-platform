@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.Gift;
 import com.xinf.service.GiftService;
-import com.xinf.util.Strings;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.session.Session;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -42,10 +39,6 @@ public class GiftController extends ApiController {
     @GetMapping
     public R selectAll(Gift gift,
              @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
-        Session session = SecurityUtils.getSubject().getSession();
-        log.info("test msg: {}", SecurityUtils.getSubject().getPrincipal());
-        log.info("test shiro session, key:{}, timeout: {}, host: {}",
-                Strings.getCollectionString(session.getAttributeKeys()), session.getTimeout(), session.getHost());
         Page page = new Page(pageCurrent, pageSize, true);
         return success(this.giftService.page(page, new QueryWrapper<>(gift)));
     }

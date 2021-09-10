@@ -11,4 +11,5 @@ import com.xinf.entity.GiftRecord;
  */
 public interface GiftRecordService extends IService<GiftRecord> {
 
+    public boolean save(GiftRecord giftRecord, String reason);
 }

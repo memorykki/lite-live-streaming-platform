@@ -26,9 +26,9 @@ public class GiftRecord implements Serializable {
     @TableId(value = "serial_gift_id",type = IdType.AUTO)
     private Long serialGiftId;
 
-    private Integer userId;
+    private Long userId;
 
-    private Integer roomId;
+    private Long roomId;
 
     private Integer giftId;
 
