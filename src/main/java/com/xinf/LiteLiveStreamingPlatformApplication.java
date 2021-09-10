@@ -27,5 +27,4 @@ public class LiteLiveStreamingPlatformApplication {
                 "Swagger文档: \thttp://" + ip + ":" + port + path + "/swagger-ui.html#/\n" +
                 "----------------------------------------------------------");
     }
-
 }

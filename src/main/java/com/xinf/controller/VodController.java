@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.Vod;
 import com.xinf.service.VodService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -35,6 +37,7 @@ public class VodController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
+    @ApiOperation("vod查询")
     public R selectAll(Vod vod,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -48,6 +51,8 @@ public class VodController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
+    @ApiOperation("vod单个")
+    @ApiImplicitParam(name = "id", value = "vodId", dataType = "long", paramType = "param")
     public R selectOne(@PathVariable Serializable id) {
         return success(this.vodService.getById(id));
     }

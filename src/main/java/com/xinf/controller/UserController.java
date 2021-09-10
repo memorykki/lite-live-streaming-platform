@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.User;
+import com.xinf.handler.WebSocketServer;
 import com.xinf.service.UserService;
 import com.xinf.util.EmailUtil;
 import com.xinf.util.RedisUtil;
@@ -53,6 +54,9 @@ public class UserController extends ApiController {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private WebSocketServer webSocketServer;
 
     /**
      * 分页查询所有数据
@@ -202,5 +206,11 @@ public class UserController extends ApiController {
             return success(null);
         }
         return failed("注册信息错误");
+    }
+
+    @ApiOperation("获取在线总人数")
+    @GetMapping("/online")
+    public R getOnlineCount() {
+        return success(webSocketServer.getOnlineCount());
     }
 }

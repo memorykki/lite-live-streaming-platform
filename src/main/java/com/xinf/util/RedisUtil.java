@@ -1354,4 +1354,11 @@ public class RedisUtil {
     public Cursor<TypedTuple<String>> zScan(String key, ScanOptions options) {
         return redisTemplate.opsForZSet().scan(key, options);
     }
+
+    /**
+     *  发布消息
+     */
+    public void pubMsg(String channel, Object msg) {
+        redisTemplate.convertAndSend(channel, msg);
+    }
 }
