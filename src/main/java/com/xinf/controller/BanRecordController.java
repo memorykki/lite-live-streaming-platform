@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.constant.FilePathConstant;
 import com.xinf.entity.BanPermission;
 import com.xinf.entity.BanRecord;
+import com.xinf.handler.WebSocketServer;
 import com.xinf.service.BanPermissionService;
 import com.xinf.service.BanRecordService;
 import io.swagger.annotations.Api;
@@ -44,6 +45,9 @@ public class BanRecordController extends ApiController {
     @Resource
     private BanPermissionService banPermissionService;
 
+    @Resource
+    private WebSocketServer webSocketServer;
+
     /**
      * 分页查询所有数据
      * @param banRecord 查询实体
@@ -76,6 +80,7 @@ public class BanRecordController extends ApiController {
     @PostMapping
     @ApiOperation(value = "添加一条举报信息", notes = "这条信息应该是待审核的")
     public R insert(@RequestBody BanRecord banRecord) throws IOException {
+
         return success(this.banRecordService.save(banRecord));
     }
 

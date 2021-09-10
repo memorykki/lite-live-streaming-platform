@@ -2,15 +2,15 @@ package com.xinf.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.constant.FilePathConstant;
+import com.xinf.dto.UserLikeDynamicInfo;
 import com.xinf.entity.UserDynamic;
-import com.xinf.entity.UserLikeDynamic;
 import com.xinf.service.UserDynamicService;
 import com.xinf.service.UserLikeDynamicService;
+import com.xinf.util.BeanUtil;
 import com.xinf.util.Strings;
 import com.xinf.util.UUIDUtil;
 import io.swagger.annotations.Api;
@@ -18,7 +18,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,40 +55,30 @@ public class UserDynamicController extends ApiController {
      */
     @GetMapping("/list")
     @ApiOperation("获取用户动态")
-    @ApiImplicitParam(name = "userId", value = "需要获取动态所属用户的id")
-    public R getUserDynamicList(long userId,
+    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "用户id", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "anchorId", value = "需要获取动态所属用户的id", dataType = "long", paramType = "query")})
+    public R getUserDynamicList(@RequestParam(defaultValue = "-1") long userId, long anchorId,
          @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
-        Page<UserDynamic> list = userDynamicService.page(page, new QueryWrapper<UserDynamic>().eq("user_id", userId));
-        return success(list);
+        Page<UserDynamic> list = userDynamicService.page(page, new QueryWrapper<UserDynamic>().eq("user_Id", anchorId).orderByDesc("update_time"));
+        if (userId == -1) {
+            return success(list);
+        }
+        return success(BeanUtil.transPage(list,
+                e -> new UserLikeDynamicInfo(e, null, userLikeDynamicService.isLike(userId, e.getDynamicId())),
+                UserLikeDynamicInfo[]::new));
     }
 
-    /**
-     * 点赞动态
-     * @param userId 点赞者id
-     * @param dynamicId 动态id
-     * @return
-     */
-    @PutMapping("/like")
-    @Transactional
-    @ApiOperation("点赞某个动态")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "点赞者的用户标识id"),
-            @ApiImplicitParam(name = "dynamicId", value = "动态id")})
-    public R like(long userId, long dynamicId) {
-        userDynamicService.update(new UpdateWrapper<UserDynamic>().eq("dynamicId", dynamicId)
-                .setSql("dynamic_like = dynamic_like + 1"));
-        userLikeDynamicService.save(new UserLikeDynamic(userId, dynamicId));
-        return success(null);
-    }
 
     /**
      * 发布动态
      */
     @PostMapping("/publish")
     @ApiOperation("发布动态")
-    @ApiImplicitParams({@ApiImplicitParam(name = "userId", value = "发布用户id"),
-            @ApiImplicitParam(name = "file", value = "上传视频或图片", required = false),
-            @ApiImplicitParam(name = "message", value = "动态信息，与file冲突，只选一个", required = false)})
+    @ApiImplicitParams({@ApiImplicitParam(name = "type", value = "1文字 2.图片 3.视频", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "userId", value = "发布用户id", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "file", value = "上传视频或图片", required = false, dataType = "file", paramType = "body"),
+            @ApiImplicitParam(name = "message", value = "动态信息，与file冲突，只选一个", required = false, dataType = "long", paramType = "query")})
     public R publish(int type, @RequestParam long userId,
           @RequestParam(required = false) MultipartFile file, @RequestParam(required = false) String message) throws IOException {
         UserDynamic userDynamic = new UserDynamic();

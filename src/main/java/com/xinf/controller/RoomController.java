@@ -94,9 +94,9 @@ public class RoomController extends ApiController {
      */
     @GetMapping("getRoomInfo")
     @ApiOperation(value = "点击直播间后获取详细信息")
-    @ApiImplicitParams({@ApiImplicitParam(name = "roomId", value = "房间标识"),
-                @ApiImplicitParam(name = "userId", value = "当前用户当前标识"),
-                @ApiImplicitParam(name = "anchorId", value = "主播身份标识")})
+    @ApiImplicitParams({@ApiImplicitParam(name = "roomId", value = "房间标识", dataType = "long", paramType = "query"),
+                @ApiImplicitParam(name = "userId", value = "当前用户当前标识", dataType = "long", paramType = "query"),
+                @ApiImplicitParam(name = "anchorId", value = "主播身份标识", dataType = "long", paramType = "query")})
     public R getRoomInfo(long roomId, long anchorId, long userId) {
         RoomInfo roomInfo = new RoomInfo();
         // 房间信息

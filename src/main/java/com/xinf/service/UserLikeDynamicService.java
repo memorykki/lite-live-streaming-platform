@@ -10,5 +10,7 @@ import com.xinf.entity.UserLikeDynamic;
  * @since 2021-08-31 19:25:19
  */
 public interface UserLikeDynamicService extends IService<UserLikeDynamic> {
+    boolean isLike(long userId, long dynamicId);
 
+    boolean cancel(long userId, long dynamicId);
 }

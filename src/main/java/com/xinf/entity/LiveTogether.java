@@ -31,10 +31,6 @@ public class LiveTogether implements Serializable {
      */
     private String name;
     /**
-     * 推送路径
-     */
-    private String pushPath;
-    /**
     * 直播状态：0下线 1上线
     */
     private Object flag;

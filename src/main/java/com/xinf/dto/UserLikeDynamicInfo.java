@@ -18,4 +18,5 @@ import java.util.Date;
 public class UserLikeDynamicInfo implements Serializable {
     UserDynamic userDynamic;
     Date createTime;
+    boolean haveLike;
 }
