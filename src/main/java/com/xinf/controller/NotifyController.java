@@ -64,18 +64,21 @@ public class NotifyController {
     // roomName : 房间id
     @RequestMapping("/play")
     public boolean play(@RequestParam String roomName){
-        if(redisUtil.zScore("recommand", roomName) == null){
-            redisUtil.zAdd("recommand", roomName,0);
-        }else{
-            redisUtil.zIncrementScore("recommand", roomName,1);
-        }
+        //if(redisUtil.zScore("recommand", roomName) == null){
+        //    redisUtil.zAdd("recommand", roomName,1);
+        //}else{
+        //    redisUtil.zIncrementScore("recommand", roomName,1);
+        //}
+        redisUtil.zIncrementScore("recommand", roomName,1);
         return true;
     }
 
     @RequestMapping("/play_done")
     public boolean play_done(@RequestParam String roomName){
-        if(redisUtil.zScore("recommand",roomName) != null){
-            redisUtil.zIncrementScore("recommand",roomName,-1);
+        if(redisUtil.zScore("recommand", roomName).isPresent()){
+            if (redisUtil.zIncrementScore("recommand", roomName, -1).intValue() < 1 ) {
+                redisUtil.zRemove("recommand", roomName);
+            }
         }
         return true;
     }

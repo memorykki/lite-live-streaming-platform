@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * (Room)表控制层
@@ -54,7 +55,7 @@ public class RoomController extends ApiController {
     @ApiOperation(value = "获取排行榜中的房间信息")
     public R selectRankingList(){
 
-        Set<String> roomSet = redisUtil.zReverseRangeByScore("recommand", 0, 5);
+        Set<String> roomSet = redisUtil.zReverseRange("recommand", 0, 9);
         if (roomSet.isEmpty()) {
             return failed("房间热度没有！");
         }
@@ -113,6 +114,12 @@ public class RoomController extends ApiController {
         roomInfo.setUser(userService.getUserInfo(anchorId));
 
         roomInfo.setFocus(userFocusService.isFocus(userId, anchorId));
+
+        // 房间送礼排行
+        Set<String> userIds = redisUtil.zReverseRange("roomhotrank:" + roomId, 0, 9);
+        roomInfo.setUserRankList(userIds.stream().map(id -> userService.getUserInfo(Integer.valueOf(id)))
+                    .collect(Collectors.toList()));
+
         return success(roomInfo);
     }
 

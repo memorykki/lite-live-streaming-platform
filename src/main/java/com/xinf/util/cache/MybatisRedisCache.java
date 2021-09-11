@@ -22,12 +22,11 @@ public class MybatisRedisCache implements Cache {
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock(true);
 
     //这里使用了redis缓存，使用springboot自动注入
-    private RedisTemplate<String, Object> redisTemplate;
+    private static RedisTemplate<String, Object> redisTemplate;
 
     private String id;
 
     public MybatisRedisCache(final String id) {
-        System.out.println("motherfuck--------------------------------------------");
         if (id == null) {
             throw new IllegalArgumentException("Cache instances require an ID");
         }
@@ -80,7 +79,7 @@ public class MybatisRedisCache implements Cache {
 
     @Override
     public int getSize() {
-        Long size = redisTemplate.execute((RedisCallback<Long>) RedisServerCommands::dbSize);
+        Long size = (Long)redisTemplate.execute((RedisCallback<Long>) RedisServerCommands::dbSize);
         return size.intValue();
     }
 
@@ -89,18 +88,7 @@ public class MybatisRedisCache implements Cache {
         return this.readWriteLock;
     }
 
-    //获取RedisTemplate,不能通过注入的方式，原因是此类是由mybatis实例化的
-    private RedisTemplate getRedisTemplate() {
-        if (redisTemplate != null) {
-            return redisTemplate;
-        }
-        synchronized (this) {
-            if (redisTemplate != null) {
-                return redisTemplate;
-            }
-            RedisTemplate redisTemplate = (RedisTemplate<String, Object>)BeanUtil.getBean("RedisTemplate");
-            this.redisTemplate = redisTemplate;
-            return redisTemplate;
-        }
+    public static void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
+        MybatisRedisCache.redisTemplate = redisTemplate;
     }
 }
