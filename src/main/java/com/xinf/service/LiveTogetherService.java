@@ -1,9 +1,7 @@
 package com.xinf.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xinf.entity.ApplyAnchorRecord;
 import com.xinf.entity.LiveTogether;
-import java.util.List;
 
 /**
  * (LiveTogether)表服务接口

@@ -1,11 +1,14 @@
 package com.xinf.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -1360,5 +1363,18 @@ public class RedisUtil {
      */
     public void pubMsg(String channel, Object msg) {
         redisTemplate.convertAndSend(channel, msg);
+    }
+
+
+    public<T> T executeLua(String command, Class<T> returnType, List<String> keys, Object... args) {
+        // 执行 lua 脚本
+        DefaultRedisScript<T> redisScript = new DefaultRedisScript<>(command, returnType);
+        // 指定 lua 脚本
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("redis/DelKey.lua")));
+        // 指定返回类型
+        redisScript.setResultType(returnType);
+        // 参数一：redisScript，参数二：key列表，参数三：arg（可多个）
+        T result = redisTemplate.execute(redisScript, keys, args);
+        return result;
     }
 }

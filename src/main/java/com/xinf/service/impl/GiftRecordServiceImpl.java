@@ -9,6 +9,7 @@ import com.xinf.entity.GiftRecord;
 import com.xinf.service.CoinHistoryService;
 import com.xinf.service.GiftRecordService;
 import com.xinf.service.GiftService;
+import com.xinf.util.RedisUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,8 @@ public class GiftRecordServiceImpl extends ServiceImpl<GiftRecordDao, GiftRecord
     private CoinHistoryService coinHistoryService;
     @Resource
     private GiftService giftService;
+    @Resource
+    private RedisUtil redisUtil;
 
     @Override
     @Transactional
@@ -35,9 +38,13 @@ public class GiftRecordServiceImpl extends ServiceImpl<GiftRecordDao, GiftRecord
         Map<String, Object> map = giftService.getMap(new QueryWrapper<Gift>().select("gift_value").eq("gift_id", giftRecord.getGiftId()));
         CoinHistory coinHistory = new CoinHistory();
         coinHistory.setUserId(giftRecord.getUserId());
-        coinHistory.setChangeNum((Integer)map.get("gift_value"));
+        coinHistory.setChangeNum(-(Integer)map.get("gift_value"));
         coinHistory.setChangeReason(reason);
         coinHistoryService.save(coinHistory);
-        return save(giftRecord);
+        boolean status = save(giftRecord);
+        // 设置房间内送礼排行
+        redisUtil.zIncrementScore("roomhotrank:" + giftRecord.getRoomId(), String.valueOf(giftRecord.getUserId()),
+                (Integer)map.get("gift_value"));
+        return status;
     }
 }

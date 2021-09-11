@@ -1,10 +1,7 @@
 package com.xinf.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xinf.entity.ApplyAnchorRecord;
 import com.xinf.entity.LiveTogether;
-import org.apache.ibatis.annotations.Param;
-import java.util.List;
 
 /**
  * (LiveTogether)表数据库访问层
