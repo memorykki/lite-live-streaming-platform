@@ -52,6 +52,19 @@ public class ShiroConfig {
     @Autowired
     BanPermissionService banPermissionService;
 
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     /**
      * Filter工厂，设置对应的过滤条件和跳转条件
      */
