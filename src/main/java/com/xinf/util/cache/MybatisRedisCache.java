@@ -27,11 +27,11 @@ public class MybatisRedisCache implements Cache {
     private String id;
 
     public MybatisRedisCache(final String id) {
+        System.out.println("motherfuck--------------------------------------------");
         if (id == null) {
             throw new IllegalArgumentException("Cache instances require an ID");
         }
         this.id = id;
-        redisTemplate = (RedisTemplate<String, Object>)BeanUtil.getBean("RedisTemplate");
     }
 
     @Override
@@ -87,5 +87,20 @@ public class MybatisRedisCache implements Cache {
     @Override
     public ReadWriteLock getReadWriteLock() {
         return this.readWriteLock;
+    }
+
+    //获取RedisTemplate,不能通过注入的方式，原因是此类是由mybatis实例化的
+    private RedisTemplate getRedisTemplate() {
+        if (redisTemplate != null) {
+            return redisTemplate;
+        }
+        synchronized (this) {
+            if (redisTemplate != null) {
+                return redisTemplate;
+            }
+            RedisTemplate redisTemplate = (RedisTemplate<String, Object>)BeanUtil.getBean("RedisTemplate");
+            this.redisTemplate = redisTemplate;
+            return redisTemplate;
+        }
     }
 }
