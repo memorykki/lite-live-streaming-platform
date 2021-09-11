@@ -32,5 +32,5 @@ public class ApplyAnchorRecord extends Model<ApplyAnchorRecord> {
     //申请证明
     private String applyEvidence;
     //申请结果：0待审核 1通过 2不通过
-    private int applyResult;
+    private Integer applyResult;
 }
