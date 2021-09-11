@@ -22,6 +22,7 @@ public class FilePathConstant implements InitializingBean {
     public String dynamicFileUrl;
     public String commonFilePath;
     public String commonFileUrl;
+    public String hdfsFilePath;
 
     @Value("${spring.profiles.active}")
     public String profile;
