@@ -38,6 +38,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void othersErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         String url = req.getRequestURI();
-        log.error("request fail! url: {}, err: {}", url, e);
+        String method = req.getMethod();
+        log.error("request fail! url: {}, method: {}, err: {}", url, method, e);
     }
 }

@@ -2,6 +2,7 @@ package com.xinf.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.Date;
  * @author makejava
  * @since 2021-08-31 19:48:05
  */
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

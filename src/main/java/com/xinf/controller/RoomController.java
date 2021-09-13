@@ -99,6 +99,8 @@ public class RoomController extends ApiController {
                 @ApiImplicitParam(name = "userId", value = "当前用户当前标识", dataType = "long", paramType = "query"),
                 @ApiImplicitParam(name = "anchorId", value = "主播身份标识", dataType = "long", paramType = "query")})
     public R getRoomInfo(long roomId, long anchorId, long userId) {
+        UserWatchHistory u = UserWatchHistory.builder().roomId(roomId).userId(userId).build();
+        userWatchHistoryService.saveOrUpdate(u);
         RoomInfo roomInfo = new RoomInfo();
         // 房间信息
         QueryWrapper<Room> roomQueryWrapper = new QueryWrapper();

@@ -7,12 +7,16 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.Vod;
 import com.xinf.service.VodService;
+import com.zh.CommandManager;
+import com.zh.CommandManagerImpl;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -29,6 +33,33 @@ public class VodController extends ApiController {
      */
     @Resource
     private VodService vodService;
+
+    @RequestMapping("start")
+    public void start(){
+        /**
+         * ffmpeg -re -i /var/live_together/kxwc.mp4 -vcodec copy -acodec copy
+         * -f flv -y rtmp://localhost:1935/live_together/kxwc
+         */
+        CommandManager manager = new CommandManagerImpl();
+        String res = manager.start("test1","/usr/bin/ffmpeg -re -i /var/live_together/kxwc.mp4 -vcodec copy -acodec copy " +
+                "-f flv -y rtmp://localhost:1935/live_together/kxwc",true);
+        System.out.println("res:"+res);
+    }
+
+    @RequestMapping("stop")
+    public void stop(){
+        new CommandManagerImpl().stop("test1");
+    }
+
+    @RequestMapping("notifyInfo")
+    public void notifyInfo(HttpServletRequest request){
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while(parameterNames.hasMoreElements()){
+            String k = parameterNames.nextElement();
+            String v = request.getParameter(k);
+            System.out.println(k+" : "+v);
+        }
+    }
 
     /**
      * 分页查询所有数据
