@@ -1,6 +1,5 @@
 package com.xinf.config;
 
-import com.xinf.util.HDFSUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -76,12 +75,13 @@ public class WebConfig implements WebMvcConfigurer {
     //    return new ReceiverRedisMessage();
     //}
 
-    @Bean
-    public HDFSUtil getHbaseService() {
-        final String defaultHdfsUri = "hdfs://xinf.memorykk.cn:9091";
-        org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
-        conf.set("fs.defaultFS", defaultHdfsUri);
-        return new HDFSUtil(conf, defaultHdfsUri);
-    }
+    // hdfs
+    //@Bean
+    //public HDFSUtil getHdfsService() {
+    //    final String defaultHdfsUri = "hdfs://xinf.memorykk.cn:9091";
+    //    org.apache.hadoop.conf.Configuration conf = new org.apache.hadoop.conf.Configuration();
+    //    conf.set("fs.defaultFS", defaultHdfsUri);
+    //    return new HDFSUtil(conf, defaultHdfsUri);
+    //}
 
 }

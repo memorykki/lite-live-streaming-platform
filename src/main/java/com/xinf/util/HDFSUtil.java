@@ -19,6 +19,7 @@ import java.util.Map;
  * @since 2021/9/11 17:21
  */
 @Slf4j
+@Deprecated
 public class HDFSUtil {
 
     private Configuration conf = null;
