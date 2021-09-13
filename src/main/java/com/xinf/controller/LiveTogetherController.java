@@ -28,14 +28,14 @@ public class LiveTogetherController extends ApiController{
     @Autowired
     LiveTogetherService liveTogetherService;
 
-    @GetMapping("start")
-    public R start(@RequestParam String id){
+    @GetMapping("start/{id}")
+    public R start(@PathVariable long id){
         /**
          * ffmpeg -re -i /var/live_together/kxwc.mp4 -vcodec copy -acodec copy -f flv -y rtmp://localhost:1935/live_together/kxwc
          */
         LiveTogether liveTogether = liveTogetherService.getById(id);
         CommandManager manager = new CommandManagerImpl();
-        String res = manager.start(id,"/usr/bin/ffmpeg -re -i /var/live_together/"+liveTogether.getName()+" -vcodec copy -acodec copy " +
+        String res = manager.start(String.valueOf(id), "/usr/bin/ffmpeg -re -i /var/live_together/"+liveTogether.getLiveTogetherId()+" -vcodec copy -acodec copy " +
                 "-f flv -y rtmp://localhost:1935/live_together/"+liveTogether.getLiveTogetherId(),true);
         if(res.equals(id)){
             liveTogether.setFlag(1);
@@ -45,11 +45,11 @@ public class LiveTogetherController extends ApiController{
         return failed("推流失败");
     }
 
-    @RequestMapping("stop")
-    public void stop(@RequestParam String id){
+    @RequestMapping("stop/{id}")
+    public void stop(@PathVariable long id){
         LiveTogether liveTogether = liveTogetherService.getById(id);
         liveTogether.setFlag(0);
-        new CommandManagerImpl().stop(id);
+        new CommandManagerImpl().stop(String.valueOf(id));
         liveTogetherService.updateById(liveTogether);
     }
 
