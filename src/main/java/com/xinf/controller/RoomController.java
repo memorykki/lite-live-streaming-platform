@@ -2,6 +2,7 @@ package com.xinf.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -99,8 +101,13 @@ public class RoomController extends ApiController {
                 @ApiImplicitParam(name = "userId", value = "当前用户当前标识", dataType = "long", paramType = "query"),
                 @ApiImplicitParam(name = "anchorId", value = "主播身份标识", dataType = "long", paramType = "query")})
     public R getRoomInfo(long roomId, long anchorId, long userId) {
-        UserWatchHistory u = UserWatchHistory.builder().roomId(roomId).userId(userId).build();
-        userWatchHistoryService.saveOrUpdate(u);
+        // 添加用户观看历史
+        if (userWatchHistoryService.count(new QueryWrapper<UserWatchHistory>().eq("user_id", userId).eq("room_id", roomId)) > 0) {
+            userWatchHistoryService.update(new UpdateWrapper<UserWatchHistory>().eq("user_id", userId).eq("room_id", roomId).set("watch_time", new Date()));
+        } else {
+            UserWatchHistory u = UserWatchHistory.builder().roomId(roomId).userId(userId).build();
+            userWatchHistoryService.save(u);
+        }
         RoomInfo roomInfo = new RoomInfo();
         // 房间信息
         QueryWrapper<Room> roomQueryWrapper = new QueryWrapper();
