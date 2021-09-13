@@ -28,17 +28,20 @@ public class UserFocusServiceImpl extends ServiceImpl<UserFocusDao, UserFocus> i
     @Override
     @Transactional
     public void add(UserFocus userFocus) {
-        save(userFocus);
-        userService.update(new UpdateWrapper<User>().eq("user_id", userFocus.getFocusedUserId())
+        if (save(userFocus)) {
+            userService.update(new UpdateWrapper<User>().eq("user_id", userFocus.getFocusedUserId())
                 .setSql("user_fans_count = user_fans_count + 1"));
+        }
     }
 
     @Override
     @Transactional
     public void remove(UserFocus userFocus) {
-        super.remove(new QueryWrapper<UserFocus>(userFocus));
-        userService.update(new UpdateWrapper<User>().eq("user_id", userFocus.getFocusedUserId())
-                .setSql("user_fans_count = user_fans_count - 1"));
+
+        if (super.remove(new QueryWrapper<UserFocus>(userFocus))) {
+            userService.update(new UpdateWrapper<User>().eq("user_id", userFocus.getFocusedUserId())
+                    .setSql("user_fans_count = user_fans_count - 1"));
+        }
     }
 
     @Override

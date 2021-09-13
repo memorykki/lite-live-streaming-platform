@@ -19,6 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class UserFocus implements Serializable {
     private static final long serialVersionUID = -81887106383629794L;
+
     private Long focusUserId;
 
     private Long focusedUserId;
