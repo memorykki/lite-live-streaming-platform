@@ -92,7 +92,9 @@ public class HDFSUtil {
         OutputStream outputStream = null;
         try {
             fileSystem = getFileSystem();
+            log.info("ttt");
             outputStream = fileSystem.create(new Path(dstFile));
+            log.info("ggg");
             IOUtils.copy(inputStream, outputStream);
             return true;
         } catch (IOException e) {

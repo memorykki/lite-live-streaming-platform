@@ -7,6 +7,7 @@ live-streaming-platform:
     dynamicFileUrl: http://172.29.3.78:8081/lite-live-streaming-platform/static/file/dynamicfile/
     commonFilePath: /commonfile/
     commonFileUrl: http://172.29.3.78:8081/lite-live-streaming-platform/static/file/commonfile/
+    hdfsFilePath: /live-streaming/
 logging:
   level:
     com.xinf: debug
