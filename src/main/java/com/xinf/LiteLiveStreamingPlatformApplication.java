@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @Slf4j
 public class LiteLiveStreamingPlatformApplication {
+    // TODO 礼物添加缓存后，获取列表时报数据过界错误
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext application = SpringApplication.run(LiteLiveStreamingPlatformApplication.class, args);
         prepared(application);
@@ -33,5 +34,7 @@ public class LiteLiveStreamingPlatformApplication {
     private static void prepared(ConfigurableApplicationContext application) {
         // 配置mybatisRedisCache中对redis的依赖
         MybatisRedisCache.setRedisTemplate((RedisTemplate<String, Object>) application.getBean("redisTemplate"));
+        // 配置hadoop的winutils路径
+        System.setProperty("hadoop.home.dir", "F:\\Info\\实训\\lite-live-streaming-platform\\lib\\hadoop\\");
     }
 }

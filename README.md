@@ -1,7 +1,7 @@
 # liteLiveStreamingPlatform
 
 #### 介绍
-lite直播平台，张衡梦想之作
+lite直播平台，张恒梦想之作
 
 #### 软件架构
 后端：springboot、shiro、mybatisplus、druid
