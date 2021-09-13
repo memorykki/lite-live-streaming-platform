@@ -3,22 +3,20 @@ package com.xinf.controller;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.xinf.constant.FilePathConstant;
-import com.xinf.util.HDFSUtil;
 import com.xinf.util.Strings;
 import com.xinf.util.UUIDUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
 
 /**
  * @author xinf
@@ -32,8 +30,8 @@ public class FileController extends ApiController {
 
     @Resource
     private FilePathConstant filePathConstant;
-    @Resource
-    private HDFSUtil hdfsUtil;
+    //@Resource
+    //private HDFSUtil hdfsUtil;
 
     @ApiOperation(value = "文件上传", notes = "返回文件url链接")
     @PostMapping
@@ -55,28 +53,28 @@ public class FileController extends ApiController {
         return success(fileUrl);
     }
 
-    @ApiOperation(value = "hdfs文件上传")
-    @PostMapping("/hdfs")
-    public R fileUpHdfs(@RequestParam MultipartFile file) throws IOException {
-        if (checkFileEmpty(file)) {
-            return failed("文件不存在");
-        }
-        String uuid = UUIDUtil.getUUID() + Strings.getFileType(file);
-        if (hdfsUtil.uploadFileToHdfs(file.getInputStream(), filePathConstant.hdfsFilePath + uuid)) {
-            return success(null);
-        }
-        return failed("上传hdfs失败");
-    }
-
-    @ApiOperation(value = "hdfs文件下载")
-    @GetMapping("/hdfsDown/{fileName}")
-    public void fileDownHdfs(@PathParam("fileName") String fileName,
-               HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/octet-stream; charset=utf-8");
-        response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
-        String path = filePathConstant.hdfsFilePath + fileName;
-        hdfsUtil.downloadFileFromHdfs(path, response.getOutputStream());
-    }
+    //@ApiOperation(value = "hdfs文件上传")
+    //@PostMapping("/hdfs")
+    //public R fileUpHdfs(@RequestParam MultipartFile file) throws IOException {
+    //    if (checkFileEmpty(file)) {
+    //        return failed("文件不存在");
+    //    }
+    //    String uuid = UUIDUtil.getUUID() + Strings.getFileType(file);
+    //    if (hdfsUtil.uploadFileToHdfs(file.getInputStream(), filePathConstant.hdfsFilePath + uuid)) {
+    //        return success(null);
+    //    }
+    //    return failed("上传hdfs失败");
+    //}
+    //
+    //@ApiOperation(value = "hdfs文件下载")
+    //@GetMapping("/hdfsDown/{fileName}")
+    //public void fileDownHdfs(@PathParam("fileName") String fileName,
+    //           HttpServletRequest request, HttpServletResponse response) throws IOException {
+    //    response.setContentType("application/octet-stream; charset=utf-8");
+    //    response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
+    //    String path = filePathConstant.hdfsFilePath + fileName;
+    //    hdfsUtil.downloadFileFromHdfs(path, response.getOutputStream());
+    //}
 
     private boolean checkFileEmpty (MultipartFile file) {
         return file == null || file.isEmpty();
