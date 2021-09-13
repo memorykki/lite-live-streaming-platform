@@ -131,16 +131,6 @@ public class UserDynamicController extends ApiController {
         return success(this.userDynamicService.getById(id));
     }
 
-    /**
-     * 新增数据
-     *
-     * @param userDynamic 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody UserDynamic userDynamic) {
-        return success(this.userDynamicService.save(userDynamic));
-    }
 
     /**
      * 修改数据

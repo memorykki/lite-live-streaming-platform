@@ -33,16 +33,20 @@ public class UserLikeDynamicServiceImpl extends ServiceImpl<UserLikeDynamicDao, 
     @Override
     @Transactional
     public boolean cancel(long userId, long dynamicId) {
-        userDynamicService.update(new UpdateWrapper<UserDynamic>().eq("dynamic_id", dynamicId)
-                .setSql("dynamic_like = dynamic_like - 1"));
-        return remove(new QueryWrapper<UserLikeDynamic>().eq("dynamic_id", dynamicId).eq("user_id", userId));
+        if (remove(new QueryWrapper<UserLikeDynamic>().eq("dynamic_id", dynamicId).eq("user_id", userId))) {
+            userDynamicService.update(new UpdateWrapper<UserDynamic>().eq("dynamic_id", dynamicId)
+                    .setSql("dynamic_like = dynamic_like - 1"));
+        }
+        return true;
     }
 
     @Override
     @Transactional
     public boolean save(UserLikeDynamic entity) {
-        userDynamicService.update(new UpdateWrapper<UserDynamic>().eq("dynamic_id", entity.getDynamicId())
-                .setSql("dynamic_like = dynamic_like + 1"));
-        return super.save(entity);
+        if (super.save(entity)) {
+            userDynamicService.update(new UpdateWrapper<UserDynamic>().eq("dynamic_id", entity.getDynamicId())
+                    .setSql("dynamic_like = dynamic_like + 1"));
+        }
+        return true;
     }
 }
