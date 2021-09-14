@@ -7,12 +7,11 @@ import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.dto.RoomInfo;
+import com.xinf.dto.UserInfoForRoomRank;
 import com.xinf.entity.Room;
+import com.xinf.entity.User;
 import com.xinf.entity.UserWatchHistory;
-import com.xinf.service.RoomService;
-import com.xinf.service.UserFocusService;
-import com.xinf.service.UserService;
-import com.xinf.service.UserWatchHistoryService;
+import com.xinf.service.*;
 import com.xinf.util.RedisUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,6 +42,8 @@ public class RoomController extends ApiController {
     private UserService userService;
     @Resource
     private RoomService roomService;
+    @Resource
+    private RoleService roleService;
     @Resource
     private UserWatchHistoryService userWatchHistoryService;
     @Resource
@@ -124,12 +126,27 @@ public class RoomController extends ApiController {
 
         roomInfo.setFocus(userFocusService.isFocus(userId, anchorId));
 
-        // 房间送礼排行
-        Set<String> userIds = redisUtil.zReverseRange("roomhotrank:" + roomId, 0, 9);
-        roomInfo.setUserRankList(userIds.stream().map(id -> userService.getUserInfo(Integer.valueOf(id)))
-                    .collect(Collectors.toList()));
-
         return success(roomInfo);
+    }
+
+    /**
+     * 获取房间送礼排行榜
+     */
+    @GetMapping("/rank")
+    @ApiOperation("获取房间送礼排行榜")
+    public R getRank(long roomId) {
+        final String key = "roomhotrank:" + roomId;
+        // 房间送礼排行
+        Set<String> userIds = redisUtil.zReverseRange(key, 0, 9);
+        return success(userIds.stream().map(id -> {
+            User user = userService.getOne(new QueryWrapper<User>().select("user_head_photo", "user_name", "role_id")
+                    .eq("user_id", id));
+            Map<String, Object> simpleInfo = roleService.getSimpleInfo(user.getRoleId());
+            return UserInfoForRoomRank.builder().userId(Long.valueOf(id)).userHeadPhoto(user.getUserHeadPhoto())
+                    .userName(user.getUserName()).roleId(user.getRoleId()).roleName((String)simpleInfo.get("role_name"))
+                    .roleIdentification((String)simpleInfo.get("role_identification"))
+                    .sendGiftValue(redisUtil.zScore(key, id).get().intValue()).build();
+        }).collect(Collectors.toList()));
     }
 
     /**

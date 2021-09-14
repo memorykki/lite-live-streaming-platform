@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author xinf
@@ -31,7 +30,4 @@ public class RoomInfo implements Serializable {
 
     @ApiModelProperty("是否关注主播")
     private boolean isFocus;
-
-    @ApiModelProperty("房间内送礼排行")
-    private List<UserInfo> userRankList;
 }
