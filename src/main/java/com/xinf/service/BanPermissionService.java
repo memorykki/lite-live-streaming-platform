@@ -10,5 +10,5 @@ import com.xinf.entity.BanPermission;
  * @since 2021-08-31 19:25:13
  */
 public interface BanPermissionService extends IService<BanPermission> {
-
+    boolean checkIsBaned(long userId);
 }

@@ -6,13 +6,13 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinf.dto.UserInfoByManage;
 import com.xinf.entity.User;
 import com.xinf.handler.WebSocketServer;
+import com.xinf.service.BanPermissionService;
+import com.xinf.service.RoleService;
 import com.xinf.service.UserService;
-import com.xinf.util.EmailUtil;
-import com.xinf.util.RedisUtil;
-import com.xinf.util.SmsUtil;
-import com.xinf.util.Strings;
+import com.xinf.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -47,6 +47,12 @@ public class UserController extends ApiController {
     private UserService userService;
 
     @Resource
+    private RoleService roleService;
+
+    @Resource
+    private BanPermissionService banPermissionService;
+
+    @Resource
     private SmsUtil smsUtil;
 
     @Resource
@@ -68,8 +74,16 @@ public class UserController extends ApiController {
     public R selectAll(User user, HttpServletRequest request,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
-        log.info("selectUser request info, Remotehost : {}", request.getRemoteHost());
-        return success(this.userService.page(page, new QueryWrapper<>(user)));
+        Page<User> p = this.userService.page(page, new QueryWrapper<>(user));
+        Page<UserInfoByManage> ans = BeanUtil.transPage(p, e -> {
+            int roleId = e.getRoleId();
+            Map<String, Object> map = roleService.getSimpleInfo(roleId);
+            int roleType = (roleId < 11) ? 1 : (roleId < 21 ? 2 : 3);
+            return UserInfoByManage.builder().user(e).roleName((String) map.get("role_name"))
+                    .roleIdentification((String) map.get("role_identification")).roleType(roleType)
+                    .isBaned(banPermissionService.checkIsBaned(e.getUserId())).build();
+        }, UserInfoByManage[]::new);
+        return success(ans);
     }
 
     /**
