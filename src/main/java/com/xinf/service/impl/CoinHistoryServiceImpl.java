@@ -41,8 +41,8 @@ public class CoinHistoryServiceImpl extends ServiceImpl<CoinHistoryDao, CoinHist
         } else if (entity.getChangeNum() < 0){
             User user = userService.getOne(new QueryWrapper<User>().select("user_exist_coins", "role_id", "user_sum_coins")
                     .eq("user_id", entity.getUserId()));
-            if (user.getUserExistCoins() < entity.getChangeNum()) {
-                return false;
+            if (user.getUserExistCoins() < -entity.getChangeNum()) {
+                throw new RuntimeException("剩余币不足以送礼");
             }
             UpdateWrapper<User> wrapper = new UpdateWrapper<User>().eq("user_id", entity.getUserId())
                     .setSql("user_exist_coins = user_exist_coins - " + num);
