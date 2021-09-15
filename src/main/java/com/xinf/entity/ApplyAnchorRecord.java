@@ -1,6 +1,5 @@
 package com.xinf.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -22,7 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class ApplyAnchorRecord extends Model<ApplyAnchorRecord> {
 
-    @TableId(value = "user_id",type = IdType.AUTO)
+    @TableId(value = "user_id")
     private Long userId;
     //申请时间
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
