@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinf.constant.SecurityProperties;
 import com.xinf.dto.UserInfoByManage;
 import com.xinf.entity.User;
 import com.xinf.handler.WebSocketServer;
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,10 @@ public class UserController extends ApiController {
     /**
      * 服务对象
      */
+
+    @Resource
+    SecurityProperties securityProperties;
+
     @Resource
     private UserService userService;
 
@@ -119,6 +125,13 @@ public class UserController extends ApiController {
     @PutMapping
     @ApiOperation(value = "修改用户数据")
     public R update(@RequestBody User user) {
+        if (user.getUserPasswd() != null) {
+            if (org.apache.logging.log4j.util.Strings.isBlank(user.getUserPasswd())) {
+                return failed("用户密码不能全由空格组成");
+            }
+            String newPs = new SimpleHash("MD5", user.getUserPasswd(), securityProperties.salt, 2).toHex();
+            user.setUserPasswd(newPs);
+        }
         return success(this.userService.updateById(user));
     }
 
