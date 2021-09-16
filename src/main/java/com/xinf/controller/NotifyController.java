@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 /**
  * @Description: TODO
@@ -48,7 +49,11 @@ public class NotifyController {
 //        }else{
 //            return false;
 //        }
-        System.out.println(request);
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while(parameterNames.hasMoreElements()){
+            String paraName=(String)parameterNames.nextElement();
+            System.out.println(paraName+": "+request.getParameter(paraName));
+        }
         return true;
     }
 
