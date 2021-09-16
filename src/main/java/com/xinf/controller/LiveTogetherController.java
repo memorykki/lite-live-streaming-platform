@@ -8,6 +8,10 @@ import com.xinf.entity.LiveTogether;
 import com.xinf.service.LiveTogetherService;
 import com.zh.CommandManager;
 import com.zh.CommandManagerImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +27,15 @@ import java.util.Enumeration;
  */
 @RestController
 @RequestMapping("liveTogether")
+@Api(value = "LiveTogetherController", tags = { "一起看接口" })
 public class LiveTogetherController extends ApiController{
 
     @Autowired
     LiveTogetherService liveTogetherService;
 
     @GetMapping("start/{id}")
+    @ApiOperation("一起看启动")
+
     public R start(@PathVariable long id){
         /**
          * ffmpeg -re -i /var/live_together/kxwc.mp4 -vcodec copy -acodec copy -f flv -y rtmp://localhost:1935/live_together/kxwc
@@ -46,6 +53,8 @@ public class LiveTogetherController extends ApiController{
     }
 
     @RequestMapping("stop/{id}")
+    @ApiOperation("一起看停止")
+
     public void stop(@PathVariable long id){
         LiveTogether liveTogether = liveTogetherService.getById(id);
         liveTogether.setFlag(0);
@@ -54,6 +63,7 @@ public class LiveTogetherController extends ApiController{
     }
 
     @RequestMapping("notifyInfo")
+
     public void notifyInfo(HttpServletRequest request){
         Enumeration<String> parameterNames = request.getParameterNames();
         while(parameterNames.hasMoreElements()){
@@ -69,6 +79,11 @@ public class LiveTogetherController extends ApiController{
      * @return 所有数据
      */
     @GetMapping
+    @ApiOperation("选择所有一起看")
+    @ApiImplicitParams({@ApiImplicitParam(name ="liveTogether", value = "一起看"),
+            @ApiImplicitParam(name ="pageCurrent", value = "当前页面"),
+            @ApiImplicitParam(name ="pageSize", value = "页面尺寸")
+    })
     public R selectAll(LiveTogether liveTogether,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -82,6 +97,10 @@ public class LiveTogetherController extends ApiController{
      * @return 所有数据
      */
     @GetMapping("selectAllEfficient")
+    @ApiOperation("选择所有有效")
+    @ApiImplicitParams({@ApiImplicitParam(name ="queryWrapper", value = "查询包装"),
+            @ApiImplicitParam(name ="page", value = "页面")
+    })
     public R selectAllEfficient(Page<LiveTogether> page, LiveTogether liveTogether) {
         QueryWrapper<LiveTogether> queryWrapper = new QueryWrapper();
         queryWrapper.eq("flag",1);
@@ -95,6 +114,9 @@ public class LiveTogetherController extends ApiController{
      * @return 单条数据
      */
     @GetMapping("{id}")
+    @ApiOperation("选择单个一起看")
+    @ApiImplicitParams({@ApiImplicitParam(name ="id ", value = "id")
+    })
     public R selectOne(@PathVariable Serializable id) {
         return success(this.liveTogetherService.getById(id));
     }
@@ -106,6 +128,9 @@ public class LiveTogetherController extends ApiController{
      * @return 新增结果
      */
     @PostMapping
+    @ApiOperation("插入一起看")
+    @ApiImplicitParams({@ApiImplicitParam(name ="liveTogether", value = "一起看")
+    })
     public R insert(@RequestBody LiveTogether liveTogether) {
         return success(this.liveTogetherService.save(liveTogether));
     }
@@ -117,6 +142,9 @@ public class LiveTogetherController extends ApiController{
      * @return 修改结果
      */
     @PutMapping
+    @ApiOperation("更新一起看")
+    @ApiImplicitParams({@ApiImplicitParam(name ="liveTogether", value = "一起看")
+    })
     public R update(@RequestBody LiveTogether liveTogether) {
         return success(this.liveTogetherService.updateById(liveTogether));
     }
