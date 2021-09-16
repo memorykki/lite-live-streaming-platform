@@ -10,6 +10,7 @@ import com.xinf.service.VodService;
 import com.zh.CommandManager;
 import com.zh.CommandManagerImpl;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -117,6 +118,9 @@ public class VodController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation("删除")
+    @ApiImplicitParams({@ApiImplicitParam(name ="idlist", value = "id列表")
+    })
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.vodService.removeByIds(idList));
     }
