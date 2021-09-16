@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.UserWatchHistory;
 import com.xinf.service.UserWatchHistoryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,6 +85,9 @@ public class UserWatchHistoryController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation("删除")
+    @ApiImplicitParams({@ApiImplicitParam(name ="idlist", value = "id列表")
+    })
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.userWatchHistoryService.removeByIds(idList));
     }

@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.CoinHistory;
 import com.xinf.service.CoinHistoryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +41,7 @@ public class CoinHistoryController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
-    @ApiOperation("获取投币历史数据")
+    @ApiOperation("选择投币历史数据")
     public R selectAll(CoinHistory coinHistory,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -53,6 +55,11 @@ public class CoinHistoryController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
+    @ApiOperation("选择单个投币历史数据")
+    @ApiImplicitParams({@ApiImplicitParam(name ="id ", value = "id"),
+            @ApiImplicitParam(name ="pageCurrent", value = "当前页面"),
+            @ApiImplicitParam(name ="pageSize", value = "页面尺寸")
+    })
     public R selectOne(@PathVariable Serializable id,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -78,6 +85,9 @@ public class CoinHistoryController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @ApiOperation("更新投币历史")
+    @ApiImplicitParams({@ApiImplicitParam(name ="CoinHistory ", value = "投币历史")
+    })
     public R update(@RequestBody CoinHistory coinHistory) {
         return success(this.coinHistoryService.updateById(coinHistory));
     }
@@ -89,6 +99,9 @@ public class CoinHistoryController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation("删除")
+    @ApiImplicitParams({@ApiImplicitParam(name ="idlist", value = "id列表")
+    })
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.coinHistoryService.removeByIds(idList));
     }
