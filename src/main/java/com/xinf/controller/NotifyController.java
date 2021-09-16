@@ -86,7 +86,7 @@ public class NotifyController {
         String roomId = request.getParameter("name");
         Room room = roomService.getById(roomId);
         if(room != null) {
-            room.setRoomStatus(0);
+            room.setRoomStatus(2);
             roomService.updateById(room);
             log.info("房间号: {} 关闭推流", roomId);
             return true;
