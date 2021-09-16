@@ -38,12 +38,16 @@ public class LiveTogetherController extends ApiController{
 
     public R start(@PathVariable long id){
         /**
-         * ffmpeg -re -i /var/live_together/kxwc.mp4 -vcodec copy -acodec copy -f flv -y rtmp://localhost:1935/live_together/kxwc
+         * /usr/bin/ffmpeg -re -i /var/live_together/1 -vcodec copy -acodec copy -f flv -y rtmp://localhost:1935/live_together/1
          */
+        System.out.println("id:" + id);
         LiveTogether liveTogether = liveTogetherService.getById(id);
+        System.out.println("liveTogether:" + liveTogether.toString());
         CommandManager manager = new CommandManagerImpl();
         String res = manager.start(String.valueOf(id), "/usr/bin/ffmpeg -re -i /var/live_together/"+liveTogether.getLiveTogetherId()+" -vcodec copy -acodec copy " +
                 "-f flv -y rtmp://localhost:1935/live_together/"+liveTogether.getLiveTogetherId(),true);
+
+        System.out.println("res:" + res);
         if(res.equals(id)){
             liveTogether.setFlag(1);
             liveTogetherService.updateById(liveTogether);
