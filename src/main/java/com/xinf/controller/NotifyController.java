@@ -4,6 +4,7 @@ import com.xinf.entity.Room;
 import com.xinf.service.PlaybackService;
 import com.xinf.service.RoomService;
 import com.xinf.util.RedisUtil;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ import java.util.Enumeration;
 @Slf4j
 @RestController
 @RequestMapping("notify")
+
 public class NotifyController {
 
     @Autowired

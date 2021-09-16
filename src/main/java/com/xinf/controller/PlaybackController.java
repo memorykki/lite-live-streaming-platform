@@ -7,6 +7,10 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinf.entity.Playback;
 import com.xinf.service.PlaybackService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,6 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("playback")
+@Api(value = "PlaybackController", tags = { "回放接口" })
 public class PlaybackController extends ApiController {
     /**
      * 服务对象
@@ -35,6 +40,11 @@ public class PlaybackController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
+    @ApiOperation("选择所有回放")
+    @ApiImplicitParams({@ApiImplicitParam(name ="playback", value = "回放"),
+            @ApiImplicitParam(name ="pageCurrent", value = "当前页面"),
+            @ApiImplicitParam(name ="pageSize", value = "页面尺寸")
+    })
     public R selectAll(Playback playback,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -48,6 +58,9 @@ public class PlaybackController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
+    @ApiOperation("选择单个回放")
+    @ApiImplicitParams({@ApiImplicitParam(name ="id ", value = "id")
+    })
     public R selectOne(@PathVariable Serializable id) {
         return success(this.playbackService.getById(id));
     }
@@ -59,6 +72,9 @@ public class PlaybackController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @ApiOperation("插入一起看")
+    @ApiImplicitParams({@ApiImplicitParam(name ="playback ", value = "回放")
+    })
     public R insert(@RequestBody Playback playback) {
         return success(this.playbackService.save(playback));
     }
@@ -70,6 +86,9 @@ public class PlaybackController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @ApiOperation("更新一起看")
+    @ApiImplicitParams({@ApiImplicitParam(name ="playback ", value = "回放")
+    })
     public R update(@RequestBody Playback playback) {
         return success(this.playbackService.updateById(playback));
     }
@@ -81,6 +100,9 @@ public class PlaybackController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation("删除")
+    @ApiImplicitParams({@ApiImplicitParam(name ="idlist", value = "id列表")
+    })
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.playbackService.removeByIds(idList));
     }
