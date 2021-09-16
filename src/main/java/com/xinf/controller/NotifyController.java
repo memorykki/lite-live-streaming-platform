@@ -24,7 +24,6 @@ import java.util.Enumeration;
  * on_publish_done http://127.0.0.1:8081/lite-live-streaming-platform/notify/publish_done;
  * on_play http://127.0.0.1:8081/lite-live-streaming-platform/notify/play;
  * on_play_done http://127.0.0.1:8081/lite-live-streaming-platform/notify/play_done;
- * on_done http://127.0.0.1:8081/lite-live-streaming-platform/notify/done;
  * on_record_done http://127.0.0.1:8081/lite-live-streaming-platform/notify/record_done;
  */
 @Slf4j
@@ -55,13 +54,6 @@ public class NotifyController {
      */
     @RequestMapping("/publish")
     public boolean publish(HttpServletRequest request){
-        System.out.println("-----------publish----------");
-        Enumeration enu=request.getParameterNames();
-        while(enu.hasMoreElements()){
-            String paraName=(String)enu.nextElement();
-            System.out.println(paraName+": "+request.getParameter(paraName));
-        }
-
         String roomId = request.getParameter("name");
         Room room = roomService.getById(roomId);
         if(room != null) {
@@ -74,15 +66,21 @@ public class NotifyController {
         }
     }
 
+    /**
+     * app: live
+     * flashver: FMLE/3.0 (compatible; FMSc/1.0)
+     * swfurl: rtmp://ts.memorykk.cn:1935/live
+     * tcurl: rtmp://ts.memorykk.cn:1935/live
+     * pageurl:
+     * addr: 113.140.84.104
+     * clientid: 18
+     * call: publish_done
+     * name: 6
+     * @param request
+     * @return
+     */
     @RequestMapping("/publish_done")
     public boolean publish_done(HttpServletRequest request){
-        System.out.println("-----------publish_done----------");
-        Enumeration enu=request.getParameterNames();
-        while(enu.hasMoreElements()){
-            String paraName=(String)enu.nextElement();
-            System.out.println(paraName+": "+request.getParameter(paraName));
-        }
-
         String roomId = request.getParameter("name");
         Room room = roomService.getById(roomId);
         if(room != null) {
@@ -95,16 +93,24 @@ public class NotifyController {
         }
     }
 
-    // roomId : 房间id
+    /**
+     * app: live
+     * flashver: LNX 9,0,124,2
+     * swfurl:
+     * tcurl: rtmp://ts.memorykk.cn:1935/live
+     * pageurl:
+     * addr: 113.140.84.104
+     * clientid: 25
+     * call: play
+     * name: 6
+     * start: 4294965296
+     * duration: 0
+     * reset: 0
+     * @param request
+     * @return
+     */
     @RequestMapping("/play")
     public boolean play(HttpServletRequest request){
-        System.out.println("-----------play----------");
-        Enumeration enu=request.getParameterNames();
-        while(enu.hasMoreElements()){
-            String paraName=(String)enu.nextElement();
-            System.out.println(paraName+": "+request.getParameter(paraName));
-        }
-
         //if(redisUtil.zScore("recommand", roomName) == null){
         //    redisUtil.zAdd("recommand", roomName,1);
         //}else{
@@ -112,42 +118,59 @@ public class NotifyController {
         //}
         String roomId = request.getParameter("name");
         redisUtil.zIncrementScore("recommand", roomId,1);
+        log.info("来自IP: {} 开始观看房间: {} ", request.getParameter("addr"),roomId);
         return true;
     }
 
+    /**
+     * app: live
+     * flashver: LNX 9,0,124,2
+     * swfurl:
+     * tcurl: rtmp://ts.memorykk.cn:1935/live
+     * pageurl:
+     * addr: 113.140.84.104
+     * clientid: 25
+     * call: play_done
+     * name: 6
+     * @param request
+     * @return
+     */
     @RequestMapping("/play_done")
     public boolean play_done(HttpServletRequest request){
-        System.out.println("-----------play_done----------");
-        Enumeration enu=request.getParameterNames();
-        while(enu.hasMoreElements()){
-            String paraName=(String)enu.nextElement();
-            System.out.println(paraName+": "+request.getParameter(paraName));
-        }
-
         String roomId = request.getParameter("name");
         if(redisUtil.zScore("recommand", roomId).isPresent()){
             if (redisUtil.zIncrementScore("recommand", roomId, -1).intValue() < 1 ) {
                 redisUtil.zRemove("recommand", roomId);
+                log.info("来自IP: {} 结束观看房间: {} ", request.getParameter("addr"),roomId);
             }
         }
         return true;
     }
 
+    /**
+     * app: live
+     * flashver: FMLE/3.0 (compatible; FMSc/1.0)
+     * swfurl: rtmp://ts.memorykk.cn:1935/live
+     * tcurl: rtmp://ts.memorykk.cn:1935/live
+     * pageurl:
+     * addr: 113.140.84.104
+     * clientid: 18
+     * call: record_done
+     * recorder:
+     * name: 6
+     * path: /usr/local/nginx/html/record/6-2021-09-16-10_58_43.flv
+     * @param request
+     * @return
+     */
     @RequestMapping("/record_done")
     public boolean record_done(HttpServletRequest request){
-
-        System.out.println("-----------play----------");
-        Enumeration enu=request.getParameterNames();
-        while(enu.hasMoreElements()){
-            String paraName=(String)enu.nextElement();
-            System.out.println(paraName+": "+request.getParameter(paraName));
-        }
-
-//        Playback playback = new Playback();
-//        playback.setRoomId(roomId);
-//        playback.setPlaybackPath(path);
-//        playbackService.save(playback);
-//        log.info("直播间: {} 保存回放， 地址为 {}", roomId, path);
+        String roomId = request.getParameter("name");
+        String path = "http://ts.memorykk.cn:1936/" + request.getParameter("path").substring(22);
+        Playback playback = new Playback();
+        playback.setRoomId(Long.parseLong(roomId));
+        playback.setPlaybackPath(path);
+        playbackService.save(playback);
+        log.info("直播间: {} 保存回放， 地址为 {}", roomId, path);
         return true;
     }
 }
