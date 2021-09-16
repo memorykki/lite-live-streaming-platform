@@ -10,6 +10,8 @@ import com.xinf.entity.BanPermission;
 import com.xinf.service.BanPermissionService;
 import com.xinf.service.BanRecordService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +44,11 @@ public class BanPermissionController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
+    @ApiOperation(value = "选择所有")
+    @ApiImplicitParams({@ApiImplicitParam(name = "BanPermission", value = "封禁权限"),
+            @ApiImplicitParam(name ="pageCurrent", value = "当前界面"),
+            @ApiImplicitParam(name ="pageSize", value = "界面尺寸"),
+    })
     public R selectAll(BanPermission banPermission,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -56,6 +63,8 @@ public class BanPermissionController extends ApiController {
      */
     @GetMapping("{id}")
     @ApiOperation("获取用户ban信息")
+    @ApiImplicitParams({@ApiImplicitParam(name = "id", value = "用户名称"),
+            @ApiImplicitParam(name ="BanPermission", value = "封禁权限")})
     public R selectOne(@PathVariable Serializable id) {
         BanInfo banInfo = new BanInfo();
         BanPermission banPermission = banPermissionService.getById(id);
@@ -71,6 +80,8 @@ public class BanPermissionController extends ApiController {
      * @return 新增结果
      */
     @PostMapping
+    @ApiOperation("插入数据")
+    @ApiImplicitParams({@ApiImplicitParam(name ="BanPermission", value = "封禁权限")})
     public R insert(@RequestBody BanPermission banPermission) {
         return success(this.banPermissionService.save(banPermission));
     }
@@ -82,6 +93,8 @@ public class BanPermissionController extends ApiController {
      * @return 修改结果
      */
     @PutMapping
+    @ApiOperation("修改数据")
+    @ApiImplicitParams({@ApiImplicitParam(name ="banPermission", value = "封禁权限")})
     public R update(@RequestBody BanPermission banPermission) {
         return success(this.banPermissionService.updateById(banPermission));
     }
@@ -93,6 +106,8 @@ public class BanPermissionController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation("删除数据")
+    @ApiImplicitParams({@ApiImplicitParam(name ="banPermission", value = "封禁权限")})
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.banPermissionService.removeByIds(idList));
     }
