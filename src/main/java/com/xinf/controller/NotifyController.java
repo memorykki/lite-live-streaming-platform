@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @Description: TODO
  * @author: zh
@@ -36,16 +38,18 @@ public class NotifyController {
     RedisUtil redisUtil;
 
     @RequestMapping("/publish")
-    public boolean publish(@RequestParam long id){
-        Room room = roomService.getById(id);
-        if(room != null) {
-            room.setRoomStatus(1);
-            roomService.updateById(room);
-            log.info("房间号: {}开始推流", id);
-            return true;
-        }else{
-            return false;
-        }
+    public boolean publish(HttpServletRequest request){
+//        Room room = roomService.getById(id);
+//        if(room != null) {
+//            room.setRoomStatus(1);
+//            roomService.updateById(room);
+//            log.info("房间号: {}开始推流", id);
+//            return true;
+//        }else{
+//            return false;
+//        }
+        System.out.println(request);
+        return true;
     }
 
     @RequestMapping("/publish_done")
