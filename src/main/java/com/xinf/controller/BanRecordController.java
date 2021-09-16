@@ -14,6 +14,8 @@ import com.xinf.service.BanPermissionService;
 import com.xinf.service.BanRecordService;
 import com.xinf.util.Strings;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +58,11 @@ public class BanRecordController extends ApiController {
      * @return 所有数据
      */
     @GetMapping
+    @ApiOperation("选择所有封禁记录")
+    @ApiImplicitParams({@ApiImplicitParam(name ="banRecord", value = "封禁记录"),
+                         @ApiImplicitParam(name ="pageCurrent", value = "当前页面"),
+                         @ApiImplicitParam(name ="pageSize", value = "页面尺寸")
+    })
     public R selectAll(BanRecord banRecord,
                        @RequestParam(defaultValue = "10") long pageSize, @RequestParam(defaultValue = "1") long pageCurrent) {
         Page page = new Page(pageCurrent, pageSize, true);
@@ -69,6 +76,9 @@ public class BanRecordController extends ApiController {
      * @return 单条数据
      */
     @GetMapping("{id}")
+    @ApiOperation("选择单个封禁记录")
+    @ApiImplicitParams({@ApiImplicitParam(name ="id", value = "用户id")
+    })
     public R selectOne(@PathVariable Serializable id) {
         return success(this.banRecordService.getById(id));
     }
@@ -127,6 +137,9 @@ public class BanRecordController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation("删除")
+    @ApiImplicitParams({@ApiImplicitParam(name ="idList", value = "i'd'list")
+    })
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.banRecordService.removeByIds(idList));
     }

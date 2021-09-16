@@ -212,6 +212,9 @@ public class RoomController extends ApiController {
      * @return 删除结果
      */
     @DeleteMapping
+    @ApiOperation("删除")
+    @ApiImplicitParams({@ApiImplicitParam(name ="idlist", value = "id列表")
+    })
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.roomService.removeByIds(idList));
     }
