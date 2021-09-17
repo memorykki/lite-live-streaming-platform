@@ -49,6 +49,7 @@ public class LiveTogetherController extends ApiController{
 
         System.out.println("res:" + res);
         if(res.equals(id)){
+            System.out.println("========================================================");
             liveTogether.setFlag(1);
             liveTogetherService.updateById(liveTogether);
             return success(null);
