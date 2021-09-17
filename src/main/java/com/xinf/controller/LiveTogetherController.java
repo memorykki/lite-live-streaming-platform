@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +29,7 @@ import java.util.Enumeration;
 @RestController
 @RequestMapping("liveTogether")
 @Api(value = "LiveTogetherController", tags = { "一起看接口" })
+@Slf4j
 public class LiveTogetherController extends ApiController{
 
     @Autowired
@@ -40,16 +42,13 @@ public class LiveTogetherController extends ApiController{
         /**
          * /usr/bin/ffmpeg -re -i /var/live_together/1 -vcodec copy -acodec copy -f flv -y rtmp://localhost:1935/live_together/1
          */
-        System.out.println("id:" + id);
         LiveTogether liveTogether = liveTogetherService.getById(id);
-        System.out.println("liveTogether:" + liveTogether.toString());
         CommandManager manager = new CommandManagerImpl();
         String res = manager.start(String.valueOf(id), "/usr/bin/ffmpeg -re -i /var/live_together/"+liveTogether.getLiveTogetherId()+" -vcodec copy -acodec copy " +
                 "-f flv -y rtmp://localhost:1935/live_together/"+liveTogether.getLiveTogetherId(),true);
 
-        System.out.println("res:" + res);
-        if(res.equals(id)){
-            System.out.println("========================================================");
+        if(res.equals(String.valueOf(id))){
+            log.info("一起看 {} 开始推流", id);
             liveTogether.setFlag(1);
             liveTogetherService.updateById(liveTogether);
             return success(null);
@@ -65,6 +64,7 @@ public class LiveTogetherController extends ApiController{
         liveTogether.setFlag(0);
         new CommandManagerImpl().stop(String.valueOf(id));
         liveTogetherService.updateById(liveTogether);
+        log.info("一起看 {} 关闭推流", id);
     }
 
     @RequestMapping("notifyInfo")
