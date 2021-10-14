@@ -42,7 +42,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * 创建连接工厂
-     * @param connectionFactory
+     * @param connectionFactory 
      * @param listenerAdapter
      * @return
      */
